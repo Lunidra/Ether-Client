@@ -3,7 +3,11 @@ package luni.ether.feature.module;
 import luni.ether.core.EtherClient;
 import luni.ether.core.event.EventHandler;
 import luni.ether.core.event.impl.TickEvent;
+import luni.ether.feature.module.mods.QoL.ChatEnhancer;
 import luni.ether.feature.module.mods.misc.ClickGUI;
+import luni.ether.feature.module.mods.render.Freelook;
+import luni.ether.feature.module.mods.render.Fullbright;
+import luni.ether.feature.module.mods.render.ServerInfoModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +19,22 @@ public class ModuleManager {
 
 
     public void init() {
+
+        // misc
         register(new ClickGUI());
+
+        // render
+        register(new Fullbright());
+        register(new Freelook());
+        register(new ServerInfoModule());
+
+        // qol
+        register(new ChatEnhancer());
 
         EtherClient.get()
                 .getContext()
                 .getEventBus()
                 .register(this);
-        // Register modules here (later)
     }
 
 
