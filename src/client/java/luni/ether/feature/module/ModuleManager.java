@@ -9,6 +9,7 @@ import luni.ether.feature.module.mods.misc.HudEditor;
 import luni.ether.feature.module.mods.movement.Sprint;
 import luni.ether.feature.module.mods.render.Freelook;
 import luni.ether.feature.module.mods.render.Fullbright;
+import luni.ether.feature.module.mods.render.HUD;
 import luni.ether.feature.module.mods.render.ServerInfoModule;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class ModuleManager {
         register(new ServerInfoModule());
         register(new Sprint());
         register(new HudEditor());
+        register(new HUD());
 
         // qol
         register(new ChatEnhancer());

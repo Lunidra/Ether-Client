@@ -1,5 +1,6 @@
 package luni.ether.ui.component;
 
+import luni.ether.feature.setting.impl.BooleanSetting;
 import luni.ether.ui.render.UIRenderer;
 
 public abstract class UIComponent {
@@ -11,6 +12,10 @@ public abstract class UIComponent {
     protected float dragOffsetX;
     protected float dragOffsetY;
     protected final String id;
+    protected boolean visible = true;
+    protected BooleanSetting setting;
+    protected boolean visibleInClickGui = true;
+    protected boolean visibleInHudEditor = true;
 
     public UIComponent(String id, float x, float y, float width, float height) {
         this.id = id;
@@ -20,8 +25,37 @@ public abstract class UIComponent {
         this.height = height;
     }
 
+    public void setSetting(BooleanSetting setting) {
+        this.setting = setting;
+    }
+
+    public BooleanSetting getSetting() {
+        return setting;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public boolean isVisibleInClickGui() {
+        return visibleInClickGui;
+    }
+
+    public boolean isVisibleInHudEditor() {
+        return visibleInHudEditor;
+    }
+
+    public boolean isVisible() {
+
+        if (setting != null) {
+            return setting.get();
+        }
+
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public boolean isMovable() {

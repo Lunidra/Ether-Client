@@ -15,6 +15,7 @@ public class ArrayListComponent extends UIComponent {
 
     public ArrayListComponent() {
         super("arraylist",0, 5, 0, 0); // x handled dynamically (right side)
+        visibleInHudEditor = false;
     }
     private static final float PADDING = 5f;
     private static final float SPACING = 4f;

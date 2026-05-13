@@ -5,13 +5,13 @@ import luni.ether.ui.render.UIRenderer;
 import luni.ether.ui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 
-public class HudCoordComponent extends UIComponent {
+public class HudPingComponent extends UIComponent {
 
-    public HudCoordComponent() {
+    public HudPingComponent() {
         super(
-                "coordinates",
+                "ping",
                 5,
-                20,
+                56,
                 60,
                 12
         );
@@ -23,29 +23,31 @@ public class HudCoordComponent extends UIComponent {
 
         var mc = Minecraft.getInstance();
 
-        if (mc.player == null) {
-            return;
+        int ping = 0;
+
+        if (mc.player != null
+                && mc.getConnection() != null
+                && mc.getConnection()
+                .getPlayerInfo(mc.player.getUUID()) != null) {
+
+            ping = mc.getConnection()
+                    .getPlayerInfo(mc.player.getUUID())
+                    .getLatency();
         }
 
-        int xPos = (int) mc.player.getX();
-        int yPos = (int) mc.player.getY();
-        int zPos = (int) mc.player.getZ();
-
-        String text = String.format(
-                "XYZ %d %d %d",
-                xPos,
-                yPos,
-                zPos
-        );
+        String text =
+                "Ping " + ping + "ms";
 
         int paddingX = 5;
 
-        width = mc.font.width(text) + (paddingX * 2);
+        width =
+                mc.font.width(text)
+                        + (paddingX * 2);
+
         height = 12;
 
         var theme = ThemeManager.get();
 
-        // background
         r.rect(
                 x,
                 y,
@@ -54,7 +56,6 @@ public class HudCoordComponent extends UIComponent {
                 theme.getBackground(100)
         );
 
-        // accent line
         r.rect(
                 x + 4,
                 y,
@@ -63,7 +64,6 @@ public class HudCoordComponent extends UIComponent {
                 theme.getAccent(255)
         );
 
-        // text
         r.text(
                 text,
                 x + paddingX,

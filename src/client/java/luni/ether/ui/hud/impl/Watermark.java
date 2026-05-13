@@ -10,7 +10,9 @@ public class Watermark extends UIComponent {
     public Watermark() {
 
         super("watermark", 2, 5, 0, 14);
+        visibleInHudEditor = false;
         this.animatedY = 0f; // or set to normalY on first render
+
 
 
     }

@@ -5,14 +5,17 @@ import luni.ether.ui.render.UIRenderer;
 import luni.ether.ui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 
-public class HudCoordComponent extends UIComponent {
+public class HudPlaytimeComponent extends UIComponent {
 
-    public HudCoordComponent() {
+    private final long startTime =
+            System.currentTimeMillis();
+
+    public HudPlaytimeComponent() {
         super(
-                "coordinates",
+                "sessiontime",
                 5,
-                20,
-                60,
+                74,
+                80,
                 12
         );
         visibleInClickGui = false;
@@ -21,31 +24,33 @@ public class HudCoordComponent extends UIComponent {
     @Override
     public void render(UIRenderer r, int mouseX, int mouseY) {
 
-        var mc = Minecraft.getInstance();
+        long elapsed =
+                (System.currentTimeMillis()
+                        - startTime) / 1000;
 
-        if (mc.player == null) {
-            return;
-        }
-
-        int xPos = (int) mc.player.getX();
-        int yPos = (int) mc.player.getY();
-        int zPos = (int) mc.player.getZ();
+        long hours = elapsed / 3600;
+        long minutes = (elapsed % 3600) / 60;
+        long seconds = elapsed % 60;
 
         String text = String.format(
-                "XYZ %d %d %d",
-                xPos,
-                yPos,
-                zPos
+                "Session %02d:%02d:%02d",
+                hours,
+                minutes,
+                seconds
         );
+
+        var mc = Minecraft.getInstance();
 
         int paddingX = 5;
 
-        width = mc.font.width(text) + (paddingX * 2);
+        width =
+                mc.font.width(text)
+                        + (paddingX * 2);
+
         height = 12;
 
         var theme = ThemeManager.get();
 
-        // background
         r.rect(
                 x,
                 y,
@@ -54,7 +59,6 @@ public class HudCoordComponent extends UIComponent {
                 theme.getBackground(100)
         );
 
-        // accent line
         r.rect(
                 x + 4,
                 y,
@@ -63,7 +67,6 @@ public class HudCoordComponent extends UIComponent {
                 theme.getAccent(255)
         );
 
-        // text
         r.text(
                 text,
                 x + paddingX,
