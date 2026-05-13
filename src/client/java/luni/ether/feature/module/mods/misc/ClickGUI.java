@@ -28,7 +28,7 @@ public class ClickGUI extends Module {
             mc.setScreen(new ClickGuiScreen(this));
         } else {
             if (mc.screen instanceof ClickGuiScreen) {
-                mc.setScreen(null);
+                mc.screen.onClose();
             }
         }
 

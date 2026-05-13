@@ -5,6 +5,9 @@ import luni.ether.core.EtherClient;
 import luni.ether.feature.module.Module;
 import luni.ether.feature.setting.Setting;
 import luni.ether.feature.setting.impl.*;
+import luni.ether.ui.clickgui.CategoryPanel;
+import luni.ether.ui.clickgui.ClickGuiScreen;
+import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,6 +16,7 @@ import java.nio.file.Path;
 public class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static JsonObject cachedGuiData;
 
     private static Path getConfigPath() {
         return Path.of("ether", "config.json");
@@ -23,7 +27,16 @@ public class ConfigManager {
             Path path = getConfigPath();
             Files.createDirectories(path.getParent());
 
-            JsonObject root = new JsonObject();
+            //TODO: 13/05/2026 -Luni Smarter Save Checks
+            JsonObject root;
+
+            if (Files.exists(path)) {
+                root = JsonParser.parseReader(
+                        new FileReader(path.toFile())
+                ).getAsJsonObject();
+            } else {
+                root = new JsonObject();
+            }
 
             for (Module module : EtherClient.get()
                     .getContext()
@@ -90,6 +103,10 @@ public class ConfigManager {
 
                 JsonObject modJson = root.getAsJsonObject(module.getName());
 
+                if (root.has("gui")) {
+                    cachedGuiData = root.getAsJsonObject("gui");
+                }
+
                 // key
                 if (modJson.has("key")) {
                     module.setKey(modJson.get("key").getAsInt());
@@ -133,5 +150,90 @@ public class ConfigManager {
             System.err.println("[Ether] Failed to load config");
             e.printStackTrace();
         }
+    }
+
+    public static float getPanelX(String category, float defaultX) {
+
+        if (cachedGuiData == null) return defaultX;
+        if (!cachedGuiData.has("panels")) return defaultX;
+
+        JsonObject panels = cachedGuiData.getAsJsonObject("panels");
+
+        if (!panels.has(category)) return defaultX;
+
+        return panels
+                .getAsJsonObject(category)
+                .get("x")
+                .getAsFloat();
+    }
+
+    public static float getPanelY(String category, float defaultY) {
+
+        if (cachedGuiData == null) return defaultY;
+        if (!cachedGuiData.has("panels")) return defaultY;
+
+        JsonObject panels = cachedGuiData.getAsJsonObject("panels");
+
+        if (!panels.has(category)) return defaultY;
+
+        return panels
+                .getAsJsonObject(category)
+                .get("y")
+                .getAsFloat();
+    }
+
+    public static void saveGuiState(ClickGuiScreen screen) {
+
+        try {
+            Path path = getConfigPath();
+            Files.createDirectories(path.getParent());
+
+            JsonObject root;
+
+            if (Files.exists(path)) {
+                root = JsonParser.parseReader(
+                        new FileReader(path.toFile())
+                ).getAsJsonObject();
+            } else {
+                root = new JsonObject();
+            }
+
+            JsonObject guiJson = new JsonObject();
+            JsonObject panelsJson = new JsonObject();
+
+            for (CategoryPanel panel : screen.getCategoryPanels()) {
+
+                JsonObject panelJson = new JsonObject();
+
+                panelJson.addProperty("x", panel.getX());
+                panelJson.addProperty("y", panel.getY());
+
+                panelsJson.add(panel.getCategory().name(), panelJson);
+            }
+
+            guiJson.add("panels", panelsJson);
+
+            root.add("gui", guiJson);
+            cachedGuiData = guiJson;
+
+            try (Writer writer = new FileWriter(path.toFile())) {
+                GSON.toJson(root, writer);
+            }
+
+            System.out.println("[Ether] GUI state saved");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean hasPanelPosition(String category) {
+
+        if (cachedGuiData == null) return false;
+        if (!cachedGuiData.has("panels")) return false;
+
+        JsonObject panels = cachedGuiData.getAsJsonObject("panels");
+
+        return panels.has(category);
     }
 }
