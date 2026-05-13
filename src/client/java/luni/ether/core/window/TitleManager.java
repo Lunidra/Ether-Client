@@ -6,9 +6,9 @@ import net.minecraft.client.Minecraft;
 public class TitleManager {
 
     public static final String NAME = "Ether";
-    public static final String VERSION = "1.0";
-    public static final String BUILD = "04x26-1b_ALPHA";
-    public static final String MC_VER = "1.21.11";
+    public static final String VERSION = "1.2";
+    public static final String BUILD = "05x26-b5_ALPHA";
+    public static final String MC_VER = "26.1";
 
     private String lastTitle = "";
 

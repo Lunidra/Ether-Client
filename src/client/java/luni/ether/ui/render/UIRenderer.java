@@ -1,18 +1,15 @@
 package luni.ether.ui.render;
 
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.Stack;
 
 public class UIRenderer {
 
-    private final GuiGraphics gfx;
+    private final GuiGraphicsExtractor gfx;
     private final Stack<int[]> scissorStack = new Stack<>();
 
-    public UIRenderer(GuiGraphics gfx) {
+    public UIRenderer(GuiGraphicsExtractor gfx) {
         this.gfx = gfx;
     }
 
@@ -20,8 +17,9 @@ public class UIRenderer {
         gfx.fill((int)x, (int)y, (int)(x + w), (int)(y + h), color);
     }
 
+
     public void text(String text, float x, float y, int color) {
-        gfx.drawString(
+        gfx.text(
                 net.minecraft.client.Minecraft.getInstance().font,
                 text,
                 (int)x,

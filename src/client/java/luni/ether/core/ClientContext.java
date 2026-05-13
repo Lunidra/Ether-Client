@@ -9,8 +9,11 @@ import luni.ether.feature.module.ModuleManager;
 import luni.ether.ui.hud.HUDManager;
 import luni.ether.ui.render.UIRenderer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+//import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 
 public class ClientContext {
 
@@ -37,16 +40,30 @@ public class ClientContext {
 
 
         //  THIS IS THE MISSING LINK
-        HudRenderCallback.EVENT.register((ctx, delta) -> {
+//        HudRenderCallback.EVENT.register((ctx, delta) -> {
+//
+//            UIRenderer renderer = new UIRenderer(ctx);
+//
+//            int mouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
+//            int mouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
+//
+//            this.getHudManager().render(renderer, mouseX, mouseY);
+//
+//        });
 
-            UIRenderer renderer = new UIRenderer(ctx);
+        HudElementRegistry.attachElementBefore(
+                VanillaHudElements.CHAT,
+                Identifier.fromNamespaceAndPath("ether", "hud"),
+                (graphics, tickCounter) -> {
 
-            int mouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
-            int mouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
+                    UIRenderer renderer = new UIRenderer(graphics);
 
-            this.getHudManager().render(renderer, mouseX, mouseY);
+                    int mouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
+                    int mouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
 
-        });
+                    this.getHudManager().render(renderer, mouseX, mouseY);
+                }
+        );
 
         //TODO CLIENT TICK EVENT
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

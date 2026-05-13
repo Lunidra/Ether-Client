@@ -260,7 +260,7 @@ public class ChatClient {
                     );
 
                     if (mc.player != null) {
-                        mc.player.displayClientMessage(Component.literal(formatted), false);
+                        mc.player.sendSystemMessage(Component.literal(formatted));
                         mc.player.playSound(net.minecraft.sounds.SoundEvents.NOTE_BLOCK_PLING.value(), 0.8f, 1.5f);
                     }
 
@@ -362,13 +362,7 @@ public class ChatClient {
                 ));
 
                 if (mc.player != null) {
-                    mc.player.displayClientMessage(text, false
-//                            net.minecraft.network.chat.Component.literal(formatted),
-//                            false // ✅ THIS puts it in chat
-
-
-
-                    );
+                    mc.player.sendSystemMessage(text);
                 }
 
             } catch (Exception e) {
@@ -399,10 +393,8 @@ public class ChatClient {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player != null) {
-            mc.player.displayClientMessage(
-                    Component.literal("§7[§bEtherChat§7] §6" + msg),
-                    false
-            );
+            mc.player.sendSystemMessage(
+                    Component.literal("§7[§bEtherChat§7] §6" + msg));
         }
     }
 

@@ -2,7 +2,7 @@ package luni.ether.feature.account.minecraft;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -73,8 +73,8 @@ public class MsAccountList extends ObjectSelectionList<MsAccountList.Entry> {
 
 
         @Override
-        public void renderContent(
-                GuiGraphics graphics,
+        public void extractContent(
+                GuiGraphicsExtractor graphics,
                 int mouseX,
                 int mouseY,
                 boolean hovered,
@@ -130,7 +130,7 @@ public class MsAccountList extends ObjectSelectionList<MsAccountList.Entry> {
 
             int textColor = active ? 0xFF55FF55 : 0xFFFFFFFF;
 
-            graphics.drawString(
+            graphics.text(
                     mc.font,
                     account.username,
                     this.getContentX() + 26,
