@@ -9,6 +9,7 @@ import luni.ether.ui.clickgui.CategoryPanel;
 import luni.ether.ui.clickgui.ClickGuiScreen;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.hud.HUDManager;
+import luni.ether.ui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 
 import java.io.*;
@@ -330,6 +331,83 @@ public class ConfigManager {
                         componentJson.get("y").getAsFloat()
                 );
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveTheme() {
+
+        try {
+
+            Path path = getConfigPath();
+
+            JsonObject root;
+
+            if (Files.exists(path)) {
+
+                root = JsonParser.parseReader(
+                        new FileReader(path.toFile())
+                ).getAsJsonObject();
+
+            } else {
+
+                root = new JsonObject();
+            }
+
+            JsonObject themeJson =
+                    new JsonObject();
+
+            themeJson.addProperty(
+                    "active",
+                    ThemeManager.getCurrentId()
+            );
+
+            root.add("theme", themeJson);
+
+            try (Writer writer =
+                         new FileWriter(path.toFile())) {
+
+                GSON.toJson(root, writer);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadTheme() {
+
+        try {
+
+            Path path = getConfigPath();
+
+            if (!Files.exists(path)) {
+                return;
+            }
+
+            JsonObject root =
+                    JsonParser.parseReader(
+                            new FileReader(path.toFile())
+                    ).getAsJsonObject();
+
+            if (!root.has("theme")) {
+                return;
+            }
+
+            JsonObject themeJson =
+                    root.getAsJsonObject("theme");
+
+            if (!themeJson.has("active")) {
+                return;
+            }
+
+            ThemeManager.set(
+                    themeJson
+                            .get("active")
+                            .getAsString()
+            );
 
         } catch (Exception e) {
             e.printStackTrace();

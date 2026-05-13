@@ -4,6 +4,7 @@ package luni.ether.ui.clickgui.component.impl;
 import luni.ether.feature.setting.impl.ModeSetting;
 import luni.ether.ui.component.SettingComponent;
 import luni.ether.ui.render.UIRenderer;
+import luni.ether.ui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 
 public class ModeComponent extends SettingComponent {
@@ -43,17 +44,17 @@ public class ModeComponent extends SettingComponent {
                 mouseY >= y && mouseY <= y + ROW_HEIGHT;
 
         if (hoveringHeader) {
-            r.rect(x + 2, y, 1, ROW_HEIGHT, 0x6600E676);
+            r.rect(x + 2, y, 1, ROW_HEIGHT, ThemeManager.get().getAccent(102));
         }
 
-        r.text(setting.getName(), x + 4, y + 3, 0xFFFFFFFF);
+        r.text(setting.getName(), x + 4, y + 3, ThemeManager.get().getText(255));
 
         String value = setting.get();
         int valueWidth = Minecraft.getInstance().font.width(value);
 
-        r.text(value, x + width - valueWidth - 10, y + 3, 0xFFAAAAAA);
+        r.text(value, x + width - valueWidth - 10, y + 3, ThemeManager.get().getText(170));
 
-        r.text(open ? "v" : ">", x + width - 8, y + 3, 0xFFFFFFFF);
+        r.text(open ? "v" : ">", x + width - 8, y + 3, ThemeManager.get().getText(255));
 
         // =========================
         // DROPDOWN (CLIPPED)
@@ -64,7 +65,7 @@ public class ModeComponent extends SettingComponent {
         float fullHeight = setting.getModes().length * ROW_HEIGHT;
         float visibleHeight = fullHeight * anim;
 
-        // 🔥 shrink slightly to avoid last-frame overlap
+        //shrink slightly to avoid last-frame overlap
         visibleHeight -= 0.5f;
 
         r.pushScissor(
@@ -83,7 +84,7 @@ public class ModeComponent extends SettingComponent {
 
             boolean selected = mode.equals(setting.get());
 
-            int bg = selected ? 0x3000E676 : 0x20000000;
+            int bg = selected ? ThemeManager.get().getAccent(48) : 0x20000000;
 
             r.rect(x + 4, renderY, width - 8, ROW_HEIGHT, bg);
 
@@ -91,7 +92,9 @@ public class ModeComponent extends SettingComponent {
                     mode,
                     x + 6,
                     renderY + 3,
-                    selected ? 0xFF00E676 : 0xFFFFFFFF
+                    selected
+                            ? ThemeManager.get().getAccent(255)
+                            : ThemeManager.get().getText(255)
             );
 
             renderY += ROW_HEIGHT;

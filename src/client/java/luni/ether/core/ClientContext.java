@@ -37,6 +37,7 @@ public class ClientContext {
                         .getContext()
                         .getHudManager()
         );
+        ConfigManager.loadTheme();
         inputManager.init();
 
 

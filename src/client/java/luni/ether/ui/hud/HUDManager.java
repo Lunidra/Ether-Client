@@ -5,6 +5,7 @@ import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.notification.Notification;
 import luni.ether.ui.notification.NotificationManager;
 import luni.ether.ui.render.UIRenderer;
+import luni.ether.ui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
@@ -97,10 +98,10 @@ public class HUDManager {
                     ((alpha / 2) << 24) | 0x101010;
 
             int accent =
-                    (alpha << 24) | 0x00E676;
+                    ThemeManager.get().getAccent(alpha);
 
             int textColor =
-                    (alpha << 24) | 0xFFFFFF;
+                    ThemeManager.get().getText(alpha);
 
             // background
             renderer.panel(
