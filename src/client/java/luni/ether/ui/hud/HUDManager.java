@@ -130,4 +130,8 @@ public class HUDManager {
             index++;
         }
     }
+
+    public List<UIComponent> getComponents() {
+        return components;
+    }
 }

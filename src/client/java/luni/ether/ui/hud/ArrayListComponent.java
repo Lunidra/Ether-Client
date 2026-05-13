@@ -14,10 +14,15 @@ public class ArrayListComponent extends UIComponent {
     private final List<Entry> entries = new ArrayList<>();
 
     public ArrayListComponent() {
-        super(0, 5, 0, 0); // x handled dynamically (right side)
+        super("arraylist",0, 5, 0, 0); // x handled dynamically (right side)
     }
     private static final float PADDING = 5f;
     private static final float SPACING = 4f;
+
+    @Override
+    public boolean isMovable() {
+        return false;
+    }
 
     @Override
     public void render(UIRenderer r, int mouseX, int mouseY) {

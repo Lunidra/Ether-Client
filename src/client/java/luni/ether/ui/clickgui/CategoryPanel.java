@@ -19,7 +19,7 @@ public class CategoryPanel extends UIComponent {
     private float dragOffsetX, dragOffsetY;
 
     public CategoryPanel(Category category, List<Module> modules, float x, float y) {
-        super(x, y, 80, 14);
+        super("categorypanel", x, y, 80, 14);
         this.category = category;
 
         for (Module m : modules) {

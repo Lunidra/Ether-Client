@@ -9,11 +9,13 @@ public class Watermark extends UIComponent {
 
     public Watermark() {
 
-        super(2, 5, 0, 14);
+        super("watermark", 2, 5, 0, 14);
         this.animatedY = 0f; // or set to normalY on first render
 
 
     }
+
+
 
     private float animatedY;
     private float targetY;
@@ -78,5 +80,9 @@ public class Watermark extends UIComponent {
         // text slightly lower
         r.text(text, x + paddingX, animatedY + 3, theme.getText(255));
 
+    }
+    @Override
+    public boolean isMovable() {
+        return false;
     }
 }
