@@ -6,7 +6,7 @@ import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.render.UIRenderer;
 import luni.ether.feature.module.Module;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -73,7 +73,7 @@ public class HudEditorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics gfx,
+    public void extractRenderState(GuiGraphicsExtractor gfx,
                        int mouseX,
                        int mouseY,
                        float delta) {
@@ -194,7 +194,7 @@ public class HudEditorScreen extends Screen {
             );
         }
 
-        super.render(gfx, mouseX, mouseY, delta);
+        //NO MORE SUPER.RENDER
 
         EtherClient.get()
                 .getContext()
