@@ -172,6 +172,8 @@ public class ClickGuiScreen extends Screen {
         }
 
         super.render(gfx, mouseX, mouseY, delta);
+
+        EtherClient.get().getContext().getHudManager().renderNotifications(r);
     }
 
     @Override

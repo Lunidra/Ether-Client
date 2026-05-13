@@ -2,6 +2,8 @@ package luni.ether.feature.module;
 
 import luni.ether.core.EtherClient;
 import luni.ether.feature.setting.Setting;
+import luni.ether.ui.notification.NotificationManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +21,16 @@ public abstract class Module {
     }
 
     // === Lifecycle ===
-    public void onEnable() {}
-    public void onDisable() {}
-    public void onToggle(boolean enabled) {}
+    public void onEnable() {
+
+        //NotificationManager.post(getName() + " Enabled");
+    }
+    public void onDisable() {
+        //NotificationManager.post(getName() + " Disabled");
+    }
+    public void onToggle(boolean enabled) {
+        //NotificationManager.post(getName() + " Toggled");
+    }
 
     // === Events ===
     public void onTick() {}
