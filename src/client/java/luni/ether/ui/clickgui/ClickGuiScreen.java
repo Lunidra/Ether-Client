@@ -56,11 +56,19 @@ public class ClickGuiScreen extends Screen {
 
             var modules = moduleManager.getByCategory(category);
 
+            float panelX = x;
+            float panelY = y;
+
+            if (ConfigManager.hasPanelPosition(category.name())) {
+                panelX = ConfigManager.getPanelX(category.name(), x);
+                panelY = ConfigManager.getPanelY(category.name(), y);
+            }
+
             CategoryPanel panel = new CategoryPanel(
                     category,
                     modules,
-                    x,
-                    y
+                    panelX,
+                    panelY
             );
 
             categoryPanels.add(panel);
@@ -168,8 +176,12 @@ public class ClickGuiScreen extends Screen {
 
     @Override
     public void onClose() {
-        super.onClose();
+
+        ConfigManager.saveGuiState(this);
         ConfigManager.save();
+
+
+        super.onClose();
         module.setEnabled(false);
     }
 
@@ -209,6 +221,10 @@ public class ClickGuiScreen extends Screen {
         settingsPanel.keyPressed(keyCode);
 
         return super.keyPressed(event);
+    }
+
+    public List<CategoryPanel> getCategoryPanels() {
+        return categoryPanels;
     }
 
 

@@ -207,4 +207,8 @@ public class CategoryPanel extends UIComponent {
             this.module = module;
         }
     }
+
+    public Category getCategory() {
+        return category;
+    }
 }
