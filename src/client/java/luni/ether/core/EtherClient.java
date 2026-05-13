@@ -4,8 +4,10 @@ import luni.ether.core.config.ConfigManager;
 import luni.ether.core.input.KeybindHandler;
 import luni.ether.core.io.ClientDirectories;
 
-import luni.ether.ui.hud.ArrayListComponent;
-import luni.ether.ui.hud.Watermark;
+import luni.ether.feature.chat.ChatClient;
+import luni.ether.ui.hud.impl.ArrayListComponent;
+import luni.ether.ui.hud.impl.Watermark;
+import luni.ether.ui.hud.impl.HudCoordComponent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ public final class EtherClient implements ClientModInitializer {
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 			this.getContext().getHudManager().register(new Watermark());
+			this.getContext().getHudManager().register(new HudCoordComponent());
 			this.getContext().getHudManager().register(new ArrayListComponent());
 			this.getContext().getEventBus().register(new KeybindHandler());
 
@@ -45,6 +48,7 @@ public final class EtherClient implements ClientModInitializer {
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ConfigManager.save();
+			ChatClient.get().shutdown();
 		});
 	}
 

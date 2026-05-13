@@ -2,21 +2,38 @@ package luni.ether.feature.module.mods.QoL;
 import luni.ether.feature.module.Category;
 import luni.ether.feature.module.Module;
 import luni.ether.feature.chat.ChatClient;
+import luni.ether.feature.setting.impl.BooleanSetting;
 import net.minecraft.client.Minecraft;
 
 public class ChatEnhancer extends Module {
 
     public static ChatEnhancer INSTANCE;
 
-    public boolean timestamps = true;
-    public boolean highlightMentions = true;
-    public boolean highlightSelf = true;
+
     private Minecraft mc = Minecraft.getInstance();
 
     public ChatEnhancer() {
         super("ChatEnhancer", Category.RENDER);
         INSTANCE = this;
     }
+
+    public final BooleanSetting timestamps =
+            addSetting(new BooleanSetting(
+                    "Timestamps",
+                    true
+            ));
+
+    public final BooleanSetting highlightMentions =
+            addSetting(new BooleanSetting(
+                    "HighlightMentions",
+                    true
+            ));
+
+    public final BooleanSetting highlightSelf =
+            addSetting(new BooleanSetting(
+                    "HighlightSelf",
+                    true
+            ));
 
     @Override
     public void onEnable() {

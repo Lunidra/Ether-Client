@@ -2,6 +2,7 @@ package luni.ether.ui.hud;
 
 import luni.ether.ui.clickgui.ClickGuiScreen;
 import luni.ether.ui.component.UIComponent;
+import luni.ether.ui.hud.impl.HudCoordComponent;
 import luni.ether.ui.notification.Notification;
 import luni.ether.ui.notification.NotificationManager;
 import luni.ether.ui.render.UIRenderer;
@@ -17,6 +18,7 @@ public class HUDManager {
     private final Minecraft mc = Minecraft.getInstance();
     private final List<UIComponent> components = new ArrayList<>();
 
+
     boolean inClickGui = Minecraft.getInstance().screen instanceof ClickGuiScreen;
 
     public void register(UIComponent component) {
@@ -24,8 +26,6 @@ public class HUDManager {
     }
 
     public void render(UIRenderer renderer, int mouseX, int mouseY) {
-
-
         var mc = Minecraft.getInstance();
 
         if (mc.screen instanceof ClickGuiScreen) return;
@@ -40,6 +40,7 @@ public class HUDManager {
 
         }
     }
+
 
     public void renderNotifications(UIRenderer renderer) {
 
@@ -131,6 +132,7 @@ public class HUDManager {
             index++;
         }
     }
+
 
     public List<UIComponent> getComponents() {
         return components;
