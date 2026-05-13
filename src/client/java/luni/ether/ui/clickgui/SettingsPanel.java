@@ -23,7 +23,7 @@ public class SettingsPanel extends UIComponent {
     private long lastTime = System.nanoTime();
 
     public SettingsPanel(float x, float y) {
-        super(x, y, 120, 120);
+        super("settingspanel", x, y, 120, 120);
     }
 
     // =========================

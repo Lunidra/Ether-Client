@@ -35,6 +35,12 @@ public class ClientContext {
         titleManager.init();
         moduleManager.init();
         ConfigManager.load();
+        ConfigManager.loadHud(
+                EtherClient.get()
+                        .getContext()
+                        .getHudManager()
+        );
+        ConfigManager.loadTheme();
         inputManager.init();
 
 

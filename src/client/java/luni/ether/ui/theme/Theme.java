@@ -5,11 +5,17 @@ public class Theme {
     private final int accent;
     private final int text;
     private final int background;
+    private final String id;
 
-    public Theme(int accent, int text, int background) {
+    public Theme(String id, int accent, int text, int background) {
+        this.id = id;
         this.accent = accent;
         this.text = text;
         this.background = background;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public int getAccent(int alpha) {

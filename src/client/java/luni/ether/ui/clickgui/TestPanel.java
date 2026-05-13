@@ -7,7 +7,7 @@ import luni.ether.ui.theme.ThemeManager;
 public class TestPanel extends UIComponent {
 
     public TestPanel() {
-        super(50, 50, 120, 80);
+        super("testpanel", 50, 50, 120, 80);
     }
 
     @Override

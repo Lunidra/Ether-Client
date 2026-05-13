@@ -3,6 +3,7 @@ package luni.ether.ui.clickgui.component.impl;
 import luni.ether.feature.setting.impl.NumberSetting;
 import luni.ether.ui.component.SettingComponent;
 import luni.ether.ui.render.UIRenderer;
+import luni.ether.ui.theme.ThemeManager;
 
 public class SliderComponent extends SettingComponent {
 
@@ -32,26 +33,26 @@ public class SliderComponent extends SettingComponent {
         boolean hovering = isHovering(mouseX, mouseY);
 
         if (hovering) {
-            r.rect(x + 2, y, 1, height, 0x6600E676);
+            r.rect(x + 2, y, 1, height, ThemeManager.get().getAccent(102));
         }
 
-        // 🔥 VALUE TEXT (you lost this earlier — now it's clean)
+        // VALUE TEXT
         String valueText = String.format("%.2f", setting.get());
 
         r.text(
                 setting.getName() + ": " + valueText,
                 x + 4,
                 y + 3,
-                0xFFFFFFFF
+                ThemeManager.get().getText(255)
         );
 
         // background
-        r.rect(sliderX, sliderY, sliderWidth, 3, 0xFF333333);
+        r.rect(sliderX, sliderY, sliderWidth, 3, ThemeManager.get().getBackground(255));
 
         // fill
-        r.rect(sliderX, sliderY, sliderWidth * percent, 3, 0xFF00E676);
+        r.rect(sliderX, sliderY, sliderWidth * percent, 3, ThemeManager.get().getAccent(255));
 
-        // 🔥 dragging logic handled here (not in panel anymore)
+        // dragging logic handled here (not in panel anymore)
         if (dragging) {
             float p = (mouseX - sliderX) / sliderWidth;
             p = Math.max(0f, Math.min(1f, p));

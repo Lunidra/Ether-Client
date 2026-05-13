@@ -7,7 +7,7 @@ import luni.ether.feature.setting.impl.BooleanSetting;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.render.UIRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -118,7 +118,7 @@ public class ClickGuiScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor gfx, int mouseX, int mouseY, float delta){
+    public void render(GuiGraphics gfx, int mouseX, int mouseY, float delta) {
         lastMouseX = mouseX;
         lastMouseY = mouseY;
 
@@ -171,7 +171,9 @@ public class ClickGuiScreen extends Screen {
             c.render(r, mouseX, mouseY);
         }
 
-        
+        super.render(gfx, mouseX, mouseY, delta);
+
+        EtherClient.get().getContext().getHudManager().renderNotifications(r);
     }
 
     @Override

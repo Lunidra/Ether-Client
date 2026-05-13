@@ -8,13 +8,24 @@ public abstract class UIComponent {
     protected float width, height;
 
     protected boolean dragging;
-    protected float dragOffsetX, dragOffsetY;
+    protected float dragOffsetX;
+    protected float dragOffsetY;
+    protected final String id;
 
-    public UIComponent(float x, float y, float width, float height) {
+    public UIComponent(String id, float x, float y, float width, float height) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isMovable() {
+        return true;
     }
 
     public abstract void render(UIRenderer r, int mouseX, int mouseY);
@@ -50,6 +61,11 @@ public abstract class UIComponent {
 
     public float getY() {
         return y;
+    }
+
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 
     public void setX(float x) {

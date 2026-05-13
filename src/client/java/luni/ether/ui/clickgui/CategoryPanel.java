@@ -19,7 +19,7 @@ public class CategoryPanel extends UIComponent {
     private float dragOffsetX, dragOffsetY;
 
     public CategoryPanel(Category category, List<Module> modules, float x, float y) {
-        super(x, y, 80, 14);
+        super("categorypanel", x, y, 80, 14);
         this.category = category;
 
         for (Module m : modules) {
@@ -54,8 +54,8 @@ public class CategoryPanel extends UIComponent {
         // HEADER
         // =========================
         r.panel(x, yOffset, width, 14);
-        r.rect(x, yOffset, width, 1, 0xFF00E676);
-        r.text(category.name(), x + 4, yOffset + 3, 0xFFFFFFFF);
+        r.rect(x, yOffset, width, 1, ThemeManager.get().getAccent(255));
+        r.text(category.name(), x + 4, yOffset + 3, ThemeManager.get().getText(255));
 
         yOffset += 14;
 
@@ -94,22 +94,32 @@ public class CategoryPanel extends UIComponent {
             // ACCENT
             // -------------------------
             if (m.isEnabled() || e.hover > 0.1f) {
-                int accentAlpha = (int)(255 * Math.max(e.hover, m.isEnabled() ? 1f : 0.3f));
-                int accent = (accentAlpha << 24) | ThemeManager.get().getAccent(24);
+                int accentAlpha =
+                        (int)(255 * Math.max(
+                                e.hover,
+                                m.isEnabled() ? 1f : 0.3f
+                        ));
+
+                int accent =
+                        ThemeManager.get()
+                                .getAccent(accentAlpha);
                 r.rect(x, rowY, 1, 12, accent);
             }
 
             // -------------------------
             // TEXT
             // -------------------------
-            int baseColor = 0xFFFFFFFF;
+            //int baseColor = ThemeManager.get().getText(baseAlpha);;
 
-            if (!m.isEnabled()) {
-                int boost = (int)(30 * e.hover);
-                baseColor = 0xFFFFFFFF - (boost << 16) - (boost << 8);
-            }
+            int textAlpha =
+                    m.isEnabled()
+                            ? 255
+                            : (int)(180 + (75 * e.hover));
 
-            int color = m.isEnabled() ? 0xFF00E676 : baseColor;
+            int color =
+                    m.isEnabled()
+                            ? ThemeManager.get().getAccent(255)
+                            : ThemeManager.get().getText(textAlpha);
 
             r.text(m.getName(), x + 4, rowY + 2, color);
 

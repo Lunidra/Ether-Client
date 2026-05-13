@@ -6,6 +6,7 @@ import luni.ether.ui.clickgui.ClickGuiScreen;
 
 import luni.ether.ui.component.SettingComponent;
 import luni.ether.ui.render.UIRenderer;
+import luni.ether.ui.theme.ThemeManager;
 
 public class KeybindComponent extends SettingComponent {
 
@@ -28,7 +29,7 @@ public class KeybindComponent extends SettingComponent {
         boolean hovering = isHovering(mouseX, mouseY);
 
         if (hovering) {
-            r.rect(x + 2, y, 1, height, 0x6600E676);
+            r.rect(x + 2, y, 1, height, ThemeManager.get().getAccent(255));
         }
 
         String text = listening
