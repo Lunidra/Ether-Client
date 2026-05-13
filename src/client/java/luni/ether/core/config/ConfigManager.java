@@ -29,7 +29,7 @@ public class ConfigManager {
                     .getContext()
                     .getModuleManager()
                     .getModules()) {
-                if (module.getName().equalsIgnoreCase("ClickGUI")) continue;
+                //if (module.getName().equalsIgnoreCase("ClickGUI")) continue;
 
                 JsonObject modJson = new JsonObject();
 
@@ -85,7 +85,7 @@ public class ConfigManager {
                     .getModuleManager()
                     .getModules()) {
 
-                if (module.getName().equalsIgnoreCase("ClickGUI")) continue;
+                //if (module.getName().equalsIgnoreCase("ClickGUI")) continue;
                 if (!root.has(module.getName())) continue;
 
                 JsonObject modJson = root.getAsJsonObject(module.getName());
