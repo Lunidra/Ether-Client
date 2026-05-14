@@ -3,9 +3,9 @@
 	"id": "ether",
 	"version": "${version}",
 	"name": "ETHER",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Modern Lightweight Social Utility Client!",
 	"authors": [
-		"Me!"
+		"Lunidra!"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",

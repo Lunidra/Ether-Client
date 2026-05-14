@@ -49,7 +49,7 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.raphimc:MinecraftAuth:5.0.0"
-	implementation 'com.neovisionaries:nv-websocket-client:2.14'
+	include(implementation 'com.neovisionaries:nv-websocket-client:2.14')
 
 	//modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}")
 

@@ -6,7 +6,8 @@
 		"ClientBrandMixin",
 		"MinecraftMixin",
 		"TitleScreenMixin",
-		"ClientPacketListenerMixin"
+		"ClientPacketListenerMixin",
+		"OptionInstanceAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
