@@ -1,5 +1,6 @@
 package luni.ether.ui.hud.impl;
 
+import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.render.UIRenderer;
 import luni.ether.ui.theme.ThemeManager;
@@ -10,7 +11,9 @@ public class Watermark extends UIComponent {
     public Watermark() {
 
         super("watermark", 2, 5, 0, 14);
+        visibleInHudEditor = false;
         this.animatedY = 0f; // or set to normalY on first render
+
 
 
     }
@@ -39,7 +42,11 @@ public class Watermark extends UIComponent {
         int screenHeight = mc.getWindow().getGuiScaledHeight();
 
         float speed = 0.15f;
-        animatedY += (targetY - animatedY) * speed;
+        animatedY = AnimationUtil.animate(
+                animatedY,
+                targetY,
+                speed
+        );
 
         // snap to avoid jitter
         if (Math.abs(targetY - animatedY) < 0.5f) {

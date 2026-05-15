@@ -5,6 +5,7 @@ import luni.ether.core.event.EventBus;
 import luni.ether.core.event.impl.TickEvent;
 import luni.ether.core.input.InputManager;
 import luni.ether.core.window.TitleManager;
+import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.module.ModuleManager;
 import luni.ether.ui.hud.HUDManager;
 import luni.ether.ui.render.UIRenderer;
@@ -41,6 +42,7 @@ public class ClientContext {
                         .getHudManager()
         );
         ConfigManager.loadTheme();
+        ChatClient.get().connect();
         inputManager.init();
 
 
@@ -73,6 +75,7 @@ public class ClientContext {
 
         //TODO CLIENT TICK EVENT
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            ChatClient.get().tick();
             if (client.player == null) return;
 
 

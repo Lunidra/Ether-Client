@@ -1,11 +1,13 @@
 package luni.ether.core;
 
 import luni.ether.core.config.ConfigManager;
+import luni.ether.core.discord.DiscordRPCManager;
 import luni.ether.core.input.KeybindHandler;
 import luni.ether.core.io.ClientDirectories;
 
-import luni.ether.ui.hud.impl.ArrayListComponent;
-import luni.ether.ui.hud.impl.Watermark;
+import luni.ether.feature.chat.ChatClient;
+import luni.ether.feature.module.mods.render.HUD;
+import luni.ether.ui.hud.impl.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
@@ -39,12 +41,59 @@ public final class EtherClient implements ClientModInitializer {
 			this.getContext().getHudManager().register(new ArrayListComponent());
 			this.getContext().getEventBus().register(new KeybindHandler());
 
+			DiscordRPCManager.start();
+
+			var moduleManager =
+					this.getContext()
+							.getModuleManager();
+
+			HUD hud =
+					(HUD) moduleManager.getByName("HUD");
+
+			HudCoordComponent coordinates =
+					new HudCoordComponent();
+
+			coordinates.setSetting(hud.coordinates);
+
+			this.getContext()
+					.getHudManager()
+					.register(coordinates);
+
+			HudFpsComponent fps =
+					new HudFpsComponent();
+
+			fps.setSetting(hud.fps);
+
+			this.getContext()
+					.getHudManager()
+					.register(fps);
+
+			HudPingComponent ping =
+					new HudPingComponent();
+
+			ping.setSetting(hud.ping);
+
+			this.getContext()
+					.getHudManager()
+					.register(ping);
+
+			HudPlaytimeComponent playtime =
+					new HudPlaytimeComponent();
+
+			playtime.setSetting(hud.sessionTime);
+
+			this.getContext()
+					.getHudManager()
+					.register(playtime);
+
 			ClientDirectories.init();
 			LOGGER.info("Client Started!");
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ConfigManager.save();
+			ChatClient.get().shutdown();
+			DiscordRPCManager.shutdown();
 		});
 	}
 

@@ -5,7 +5,9 @@
 	"client": [
 		"ClientBrandMixin",
 		"MinecraftMixin",
-		"TitleScreenMixin"
+		"TitleScreenMixin",
+		"ClientPacketListenerMixin",
+		"OptionInstanceAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

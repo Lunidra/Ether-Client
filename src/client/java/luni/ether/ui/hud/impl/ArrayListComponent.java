@@ -1,6 +1,7 @@
 package luni.ether.ui.hud.impl;
 
 import luni.ether.core.EtherClient;
+import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.render.UIRenderer;
 import luni.ether.ui.theme.ThemeManager;
@@ -15,6 +16,7 @@ public class ArrayListComponent extends UIComponent {
 
     public ArrayListComponent() {
         super("arraylist",0, 5, 0, 0); // x handled dynamically (right side)
+        visibleInHudEditor = false;
     }
     private static final float PADDING = 5f;
     private static final float SPACING = 4f;
@@ -74,8 +76,8 @@ public class ArrayListComponent extends UIComponent {
         float baseX = screenWidth - maxWidth - rightMargin;
 
 
-        float speed = 0.15f;
-        float fadeSpeed = 0.15f;
+        float speed = 0.12f;
+        float fadeSpeed = 0.10f;
 
         for (Entry e : entries) {
 
@@ -93,10 +95,18 @@ public class ArrayListComponent extends UIComponent {
             }
 
             // animate towards target
-            e.x += (e.targetX - e.x) * speed;
+            e.x = AnimationUtil.animate(
+                    e.x,
+                    e.targetX,
+                    speed
+            );
 
 
-            e.alpha += (e.targetAlpha - e.alpha) * fadeSpeed;
+            e.alpha = AnimationUtil.animate(
+                    e.alpha,
+                    e.targetAlpha,
+                    fadeSpeed
+            );
 
             if (Math.abs(e.targetAlpha - e.alpha) < 0.01f) {
                 e.alpha = e.targetAlpha;
@@ -120,7 +130,25 @@ public class ArrayListComponent extends UIComponent {
             int textColor = theme.getText(alpha);
 
             r.rect(e.x - 3, yOffset, textWidth + 6, 10, bg);
-            r.rect(e.x - 4, yOffset, 1, 10, accent);
+
+//            r.rect(e.x - 4, yOffset, 1, 10, accent);
+            float accentHeight = 10 * e.alpha;
+
+            r.rect(
+                    e.x - 4,
+                    yOffset + ((10 - accentHeight) / 2f),
+                    1,
+                    accentHeight,
+                    accent
+            );
+
+            r.text(
+                    e.name,
+                    e.x + 0.5f,
+                    yOffset + 1.5f,
+                    0x55000000
+            );
+
             r.text(e.name, e.x, yOffset + 1, textColor);
 
             yOffset += 10;

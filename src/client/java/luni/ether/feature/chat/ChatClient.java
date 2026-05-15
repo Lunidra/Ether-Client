@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.neovisionaries.ws.client.*;
 
+import luni.ether.core.network.NetworkConfig;
 import luni.ether.feature.module.mods.QoL.ChatEnhancer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -88,8 +89,8 @@ public class ChatClient {
             WebSocketFactory factory = new WebSocketFactory();
 
             socket = factory
-                    .createSocket("ws://192.168.4.26:832") // later → wss://
-                    .addHeader("Authorization", "Bearer dev-token") // 🔐 auth ready
+                    .createSocket(NetworkConfig.CHAT_SERVER) // later → wss://
+                    .addHeader("Authorization", "Bearer " + NetworkConfig.CHAT_AUTH) // auth ready
                     .addListener(new WebSocketAdapter() {
 
 
@@ -311,21 +312,21 @@ public class ChatClient {
                 //TODO MODULE ADDITIONS
                 boolean mention = false;
 
-                if (ChatEnhancer.INSTANCE != null && ChatEnhancer.INSTANCE.isEnabled() && ChatEnhancer.INSTANCE.highlightMentions) {
+                if (ChatEnhancer.INSTANCE != null && ChatEnhancer.INSTANCE.isEnabled() && ChatEnhancer.INSTANCE.highlightMentions.get()) {
                     String msgLower = packet.message.toLowerCase();
                     String userLower = getUsername().toLowerCase();
 
                     mention = msgLower.contains(userLower);
                 }
 
-                if (ChatEnhancer.INSTANCE != null && ChatEnhancer.INSTANCE.isEnabled() && ChatEnhancer.INSTANCE.highlightSelf && isSelf) {
+                if (ChatEnhancer.INSTANCE != null && ChatEnhancer.INSTANCE.isEnabled() && ChatEnhancer.INSTANCE.highlightSelf.get() && isSelf) {
                     nameColor = "§a§l";
                 }
 
                 //TODO MODULE ADDITIONS
                 String timePrefix = "";
 
-                if (ChatEnhancer.INSTANCE != null && ChatEnhancer.INSTANCE.isEnabled() && ChatEnhancer.INSTANCE.timestamps) {
+                if (ChatEnhancer.INSTANCE != null && ChatEnhancer.INSTANCE.isEnabled() && ChatEnhancer.INSTANCE.timestamps.get()) {
                     String time = java.time.LocalTime.now()
                             .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
 
@@ -403,5 +404,23 @@ public class ChatClient {
                 "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
                 "$1-$2-$3-$4-$5"
         );
+    }
+
+    public void shutdown() {
+
+        shouldReconnect = false;
+
+        connected = false;
+        authenticated = false;
+
+        try {
+
+            if (socket != null) {
+                socket.disconnect();
+            }
+
+        } catch (Exception ignored) {}
+
+        socket = null;
     }
 }
