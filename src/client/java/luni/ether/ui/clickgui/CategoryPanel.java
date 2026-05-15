@@ -2,6 +2,7 @@ package luni.ether.ui.clickgui;
 
 import luni.ether.feature.module.Category;
 import luni.ether.feature.module.Module;
+import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.render.UIRenderer;
 import luni.ether.ui.theme.ThemeManager;
@@ -78,7 +79,11 @@ public class CategoryPanel extends UIComponent {
             float speed = 0.2f;
 
             // animations
-            e.hover += ((hovering ? 1f : 0f) - e.hover) * speed;
+            e.hover = AnimationUtil.animate(
+                    e.hover,
+                    hovering ? 1f : 0f,
+                    speed
+            );
 
 
             // -------------------------

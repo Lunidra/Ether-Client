@@ -2,6 +2,7 @@ package luni.ether.ui.hud;
 
 import luni.ether.core.EtherClient;
 import luni.ether.feature.module.mods.render.HUD;
+import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.clickgui.ClickGuiScreen;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.hud.editor.HudEditorScreen;
@@ -78,94 +79,138 @@ public class HUDManager {
     }
 
 
-    public void renderNotifications(UIRenderer renderer) {
+    public void renderNotifications(UIRenderer r) {
 
         var mc = Minecraft.getInstance();
 
-        int screenWidth = mc.getWindow().getGuiScaledWidth();
-        int screenHeight = mc.getWindow().getGuiScaledHeight();
+        float xPadding = 6f;
+        float yPadding = 6f;
 
-        int spacing = 6;
-        int notifHeight = 18;
+        float notificationWidth = 140f;
+        float notificationHeight = 22f;
 
-        int index = 0;
+        float spacing = 4f;
 
-        for (Notification notification :
+        float screenWidth =
+                mc.getWindow()
+                        .getGuiScaledWidth();
+
+        float targetY = yPadding;
+
+        for (Notification n :
                 NotificationManager.getNotifications()) {
 
-            long elapsed =
-                    System.currentTimeMillis()
-                            - notification.getStartTime();
+            // =========================
+            // TARGET ANIMATION
+            // =========================
 
-            boolean expiring =
-                    elapsed > notification.getDuration() - 300;
+            float targetAnim =
+                    n.shouldHide() ? 0f : 1f;
 
-            float target =
-                    expiring ? 0f : 1f;
+            n.setAnimation(
+                    AnimationUtil.animate(
+                            n.getAnimation(),
+                            targetAnim,
+                            0.15f
+                    )
+            );
+
+            n.setYOffset(
+                    AnimationUtil.animate(
+                            n.getYOffset(),
+                            targetY,
+                            0.15f
+                    )
+            );
 
             float anim =
-                    notification.getAnimation();
+                    AnimationUtil.easeOutQuad(
+                            n.getAnimation()
+                    );
 
-            anim += (target - anim) * 0.15f;
+            // =========================
+            // POSITION
+            // =========================
 
-            notification.setAnimation(anim);
+            float hiddenX =
+                    screenWidth + notificationWidth;
 
-            String text = notification.getMessage();
-
-            int textWidth =
-                    mc.font.width(text);
-
-            float width = textWidth + 20;
-
-            float x =
+            float visibleX =
                     screenWidth
-                            - width
-                            - 10
-                            + ((1f - anim) * 40);
+                            - notificationWidth
+                            - xPadding;
+
+            float x = AnimationUtil.lerp(
+                    hiddenX,
+                    visibleX,
+                    anim
+            );
 
             float y =
-                    screenHeight
-                            - 30
-                            - (index * (notifHeight + spacing));
+                    n.getYOffset();
 
-            int alpha =
-                    (int)(anim * 255);
+            // =========================
+            // COLORS
+            // =========================
 
-            int bg =
-                    ((alpha / 2) << 24) | 0x101010;
+            int accent;
 
-            int accent =
-                    ThemeManager.get().getAccent(alpha);
+            switch (n.getType()) {
 
-            int textColor =
-                    ThemeManager.get().getText(alpha);
+                case SUCCESS ->
+                        accent = 0xFF4CAF50;
 
-            // background
-            renderer.panel(
+                case WARNING ->
+                        accent = 0xFFFFC107;
+
+                case ERROR ->
+                        accent = 0xFFF44336;
+
+                default ->
+                        accent = 0xFF2196F3;
+            }
+
+            int bg = 0xCC000000;
+
+            // =========================
+            // BACKGROUND
+            // =========================
+
+            r.rect(
                     x,
                     y,
-                    width,
-                    notifHeight
+                    notificationWidth,
+                    notificationHeight,
+                    bg
             );
 
             // accent bar
-            renderer.rect(
+            r.rect(
                     x,
                     y,
                     2,
-                    notifHeight,
+                    notificationHeight,
                     accent
             );
 
-            // text
-            renderer.text(
-                    text,
+            // =========================
+            // TEXT
+            // =========================
+
+            r.text(
+                    n.getMessage(),
                     x + 8,
-                    y + 5,
-                    textColor
+                    y + 7,
+                    0xFFFFFFFF
             );
 
-            index++;
+            // =========================
+            // STACKING
+            // =========================
+
+            targetY +=
+                    notificationHeight
+                            + spacing;
         }
     }
 

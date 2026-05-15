@@ -4,6 +4,7 @@ import luni.ether.core.EtherClient;
 import luni.ether.core.event.EventHandler;
 import luni.ether.core.event.impl.KeyEvent;
 import luni.ether.feature.module.Module;
+import luni.ether.ui.notification.NotificationManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 

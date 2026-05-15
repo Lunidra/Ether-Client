@@ -2,6 +2,7 @@ package luni.ether.ui.clickgui.component.impl;
 
 
 import luni.ether.feature.setting.impl.ModeSetting;
+import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.component.SettingComponent;
 import luni.ether.ui.render.UIRenderer;
 import luni.ether.ui.theme.ThemeManager;
@@ -33,7 +34,11 @@ public class ModeComponent extends SettingComponent {
         // ANIMATION
         // =========================
         float target = open ? 1f : 0f;
-        anim += (target - anim) * Math.min(1f, 8f * delta);
+        anim = AnimationUtil.animate(
+                anim,
+                target,
+                Math.min(1f, 8f * delta)
+        );
 
         if (Math.abs(anim) < 0.001f) anim = 0f;
 
