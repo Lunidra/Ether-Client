@@ -1,4 +1,4 @@
-package luni.ether.ui.hud;
+package luni.ether.ui.hud.impl;
 
 import luni.ether.core.EtherClient;
 import luni.ether.ui.component.UIComponent;

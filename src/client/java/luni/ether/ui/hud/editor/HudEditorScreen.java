@@ -43,7 +43,14 @@ public class HudEditorScreen extends Screen {
 
         for (UIComponent c : components) {
 
-            if (!c.isMovable()) continue;
+            if (!c.isVisible()
+                    || !c.isVisibleInHudEditor()) {
+                continue;
+            }
+
+            if (!c.isMovable()) {
+                continue;
+            }
                 c.mouseClicked(
                         lastMouseX,
                         lastMouseY,
@@ -63,7 +70,15 @@ public class HudEditorScreen extends Screen {
         int button = event.button();
 
         for (UIComponent c : components) {
-            if (!c.isMovable()) continue;
+
+            if (!c.isVisible()
+                    || !c.isVisibleInHudEditor()) {
+                continue;
+            }
+
+            if (!c.isMovable()) {
+                continue;
+            }
             c.mouseReleased(button);
         }
 
@@ -129,7 +144,16 @@ public class HudEditorScreen extends Screen {
         // dragging
         if (mouseDown) {
             for (UIComponent c : components) {
-                if (!c.isMovable()) continue;
+
+
+                if (!c.isVisible()
+                        || !c.isVisibleInHudEditor()) {
+                    continue;
+                }
+
+                if (!c.isMovable()) {
+                    continue;
+                }
                 c.mouseDragged(
                         lastMouseX,
                         lastMouseY
@@ -142,6 +166,10 @@ public class HudEditorScreen extends Screen {
         // render components
         for (UIComponent c : components) {
 
+            if (!c.isVisible()
+                    || !c.isVisibleInHudEditor()) {
+                continue;
+            }
 
             boolean hovering =
                     mouseX >= c.getX() &&
@@ -155,6 +183,8 @@ public class HudEditorScreen extends Screen {
                             : 0x44FFFFFF;
 
             c.render(r, mouseX, mouseY);
+
+
 
             if (!c.isMovable()) {
                 continue;

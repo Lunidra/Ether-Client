@@ -4,8 +4,8 @@ import luni.ether.core.config.ConfigManager;
 import luni.ether.core.input.KeybindHandler;
 import luni.ether.core.io.ClientDirectories;
 
-import luni.ether.ui.hud.ArrayListComponent;
-import luni.ether.ui.hud.Watermark;
+import luni.ether.ui.hud.impl.ArrayListComponent;
+import luni.ether.ui.hud.impl.Watermark;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;

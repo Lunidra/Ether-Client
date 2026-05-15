@@ -2,6 +2,7 @@ package luni.ether.ui.clickgui;
 
 import luni.ether.feature.module.Module;
 import luni.ether.feature.setting.Setting;
+import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.component.SettingComponent;
 import luni.ether.ui.component.SettingComponentFactory;
 import luni.ether.ui.component.UIComponent;
@@ -101,7 +102,11 @@ public class SettingsPanel extends UIComponent {
             if (scrollTarget < 0) scrollTarget = 0;
             if (scrollTarget > maxScroll) scrollTarget = maxScroll;
 
-            scroll += (scrollTarget - scroll) * 0.15f;
+            scroll = AnimationUtil.animate(
+                    scroll,
+                    scrollTarget,
+                    0.15f
+            );
 
         } finally {
             r.popScissor();
