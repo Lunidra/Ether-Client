@@ -7,6 +7,7 @@ public class ChatMessage {
     public String message;
     public String server;
     public String serverIP;
+    public String gameVersion;
 
     public boolean isStaff;
     public boolean isDeveloper;
