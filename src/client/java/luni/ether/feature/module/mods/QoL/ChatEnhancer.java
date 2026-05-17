@@ -34,6 +34,7 @@ public class ChatEnhancer extends Module {
                     "HighlightSelf",
                     true
             ));
+    public final BooleanSetting Versions = addSetting(new BooleanSetting("Display Game Versions", true));
 
     @Override
     public void onEnable() {

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.neovisionaries.ws.client.*;
 
+import luni.ether.core.EtherClient;
 import luni.ether.core.network.NetworkConfig;
 import luni.ether.feature.module.mods.QoL.ChatEnhancer;
 import net.minecraft.client.Minecraft;
@@ -183,8 +184,18 @@ public class ChatClient {
                     System.out.println("[EtherChat] Authenticated With Token: " + sessionToken);
                     authenticated = true;
 
+                    JsonObject presence = new JsonObject();
+
+                    presence.addProperty("type", "presence");
+                    presence.addProperty("server", "Unknown");
+                    presence.addProperty("serverIP", "Unknown");
+                    presence.addProperty("gameVersion", EtherClient.MC_VER);
+
+                    send(presence.toString());
+
                     // request fresh snapshot
                     send("{\"type\":\"presence_request\"}");
+
 
                     return;
                 }
@@ -216,7 +227,7 @@ public class ChatClient {
 
 
                 // user join
-                if (obj.get("type").getAsString().equals("user_join")) {
+                if (obj.has("type") && obj.get("type").getAsString().equals("user_join")) {
                     String uuid = formatUUID(obj.get("uuid").getAsString());
 
                     etherUsers.put(uuid, "Unknown"); // no server yet
@@ -253,6 +264,9 @@ public class ChatClient {
                 if (obj.has("type") && obj.get("type").getAsString().equals("broadcast")) {
                     String message = obj.get("message").getAsString();
                     String sender = obj.get("sender").getAsString();
+
+
+
 
                     String formatted = String.format(
                             "§6§l[ETHER BROADCAST] §r§e%s§7: §f%s",
@@ -334,10 +348,21 @@ public class ChatClient {
                 }
 
 
+                String versionInfo = "";
+
+                if (ChatEnhancer.INSTANCE != null
+                        && ChatEnhancer.INSTANCE.isEnabled()
+                        && ChatEnhancer.INSTANCE.Versions.get()
+                        && packet.gameVersion != null) {
+
+                    versionInfo = packet.gameVersion + " • ";
+                }
+
+
                 String formatted = String.format(
                         "%s§7[§bEtherChat§7] §7(%s) %s%s%s§7: §f%s",
                         timePrefix,
-                        packet.server,
+                        versionInfo + packet.server,
                         prefix,
                         nameColor,
                         packet.username,
