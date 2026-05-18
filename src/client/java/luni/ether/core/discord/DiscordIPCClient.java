@@ -3,7 +3,12 @@ package luni.ether.core.discord;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.StandardProtocolFamily;
+import java.net.UnixDomainSocketAddress;
+import java.nio.channels.SocketChannel;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -13,27 +18,135 @@ public class DiscordIPCClient {
     private static final int OPCODE_FRAME = 1;
     private boolean connected = false;
 
-    private RandomAccessFile pipe;
+    private OutputStream output;
+    private InputStream input;
+    private SocketChannel unixChannel;
+
+    private final boolean windows =
+            System.getProperty("os.name")
+                    .toLowerCase()
+                    .contains("win");
 
     public boolean connect() {
+
+        connected = false;
 
         for (int i = 0; i < 10; i++) {
 
             try {
 
-                String path =
-                        "\\\\.\\pipe\\discord-ipc-" + i;
+                // WINDOWS
+                if (windows) {
 
-                pipe = new RandomAccessFile(path, "rw");
+                    String path =
+                            "\\\\.\\pipe\\discord-ipc-" + i;
 
-                connected = true;
-                return true;
+                    var pipe =
+                            new java.io.RandomAccessFile(path, "rw");
 
-            } catch (Exception ignored) {
+                    input = new java.io.BufferedInputStream(
+                            new java.io.FileInputStream(
+                                    pipe.getFD()
+                            )
+                    );
+
+                    output = new java.io.BufferedOutputStream(
+                            new java.io.FileOutputStream(
+                                    pipe.getFD()
+                            )
+                    );
+
+                    connected = true;
+
+                    System.out.println(
+                            "[EtherRPC] Connected via Windows IPC."
+                    );
+
+                    return true;
+                }
+
+                // LINUX / UNIX
+                String runtime =
+                        System.getenv("XDG_RUNTIME_DIR");
+
+                String[] basePaths = new String[] {
+                        runtime,
+                        "/tmp",
+
+                        // Flatpak Discord
+                        runtime + "/app/com.discordapp.Discord",
+
+                        // Vesktop
+                        runtime + "/app/dev.vencord.Vesktop",
+
+                        // Canary
+                        runtime + "/app/com.discordapp.DiscordCanary"
+                };
+
+                for (String base : basePaths) {
+
+                    if (base == null) {
+                        continue;
+                    }
+
+                    File socketFile =
+                            new File(base,
+                                    "discord-ipc-" + i);
+
+                    if (!socketFile.exists()) {
+                        continue;
+                    }
+
+                    System.out.println(
+                            "[EtherRPC] Trying IPC: "
+                                    + socketFile.getAbsolutePath()
+                    );
+
+                    UnixDomainSocketAddress address =
+                            UnixDomainSocketAddress.of(
+                                    socketFile.toPath()
+                            );
+
+                    unixChannel =
+                            SocketChannel.open(
+                                    StandardProtocolFamily.UNIX
+                            );
+
+                    unixChannel.connect(address);
+
+                    input =
+                            java.nio.channels.Channels.newInputStream(
+                                    unixChannel
+                            );
+
+                    output =
+                            java.nio.channels.Channels.newOutputStream(
+                                    unixChannel
+                            );
+
+                    connected = true;
+
+                    System.out.println(
+                            "[EtherRPC] Connected via "
+                                    + socketFile.getAbsolutePath()
+                    );
+
+                    return true;
+                }
+
+            } catch (Exception e) {
+
+                System.out.println(
+                        "[EtherRPC] IPC attempt failed: "
+                                + e.getMessage()
+                );
             }
         }
 
-        connected = false;
+        System.out.println(
+                "[EtherRPC] Discord not found."
+        );
+
         return false;
     }
 
@@ -137,16 +250,17 @@ public class DiscordIPCClient {
         writeInt(opcode);
         writeInt(bytes.length);
 
-        pipe.write(bytes);
+        output.write(bytes);
+        output.flush();
     }
 
     private void writeInt(int value)
             throws IOException {
 
-        pipe.write(value & 0xFF);
-        pipe.write((value >> 8) & 0xFF);
-        pipe.write((value >> 16) & 0xFF);
-        pipe.write((value >> 24) & 0xFF);
+        output.write(value & 0xFF);
+        output.write((value >> 8) & 0xFF);
+        output.write((value >> 16) & 0xFF);
+        output.write((value >> 24) & 0xFF);
     }
 
     public void close() {
@@ -154,8 +268,16 @@ public class DiscordIPCClient {
 
         try {
 
-            if (pipe != null) {
-                pipe.close();
+            if (input != null) {
+                input.close();
+            }
+
+            if (output != null) {
+                output.close();
+            }
+
+            if (unixChannel != null) {
+                unixChannel.close();
             }
 
         } catch (Exception ignored) {
