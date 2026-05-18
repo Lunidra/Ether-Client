@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.neovisionaries.ws.client.*;
 
+import luni.ether.core.DevFlags;
 import luni.ether.core.EtherClient;
 import luni.ether.core.network.NetworkConfig;
 import luni.ether.feature.module.mods.QoL.ChatEnhancer;
@@ -51,7 +52,10 @@ public class ChatClient {
             return true; // always include self
         }
 
-        return etherUsers.containsKey(uuid.toString()) || authenticated;
+        //return etherUsers.containsKey(uuid.toString()) || authenticated;
+        return etherUsers.containsKey(uuid.toString())
+                || authenticated
+                || DevFlags.DEV_MODE;
     }
 
     public String getUserServer(UUID uuid) {

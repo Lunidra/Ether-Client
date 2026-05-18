@@ -125,33 +125,35 @@ public class ArrayListComponent extends UIComponent {
 
             var theme = ThemeManager.get();
 
-            int bg = theme.getBackground(alpha / 3);
+            //TODO: 18/05/2026 Luni: Migrate new theme system
+
+            int bg = theme.getSurfaceBright(alpha / 2);
             int accent = theme.getAccent(alpha);
-            int textColor = theme.getText(alpha);
+            int textColor = theme.getTextPrimary(alpha);
 
-            r.rect(e.x - 3, yOffset, textWidth + 6, 10, bg);
 
-//            r.rect(e.x - 4, yOffset, 1, 10, accent);
-            float accentHeight = 10 * e.alpha;
 
-            r.rect(
-                    e.x - 4,
-                    yOffset + ((10 - accentHeight) / 2f),
-                    1,
-                    accentHeight,
-                    accent
-            );
+
+            r.rect(e.x - 4, yOffset, textWidth + 8, 1, theme.getBorder(alpha / 2));
+            r.rect(e.x - 4, yOffset, textWidth + 6, 10, bg);
+
+            r.rect(e.x - 4, yOffset + 1, 1, 8, accent);
 
             r.text(
                     e.name,
                     e.x + 0.5f,
                     yOffset + 1.5f,
-                    0x55000000
+                    theme.getAccentDark(100)
             );
 
-            r.text(e.name, e.x, yOffset + 1, textColor);
+            r.text(
+                    e.name,
+                    e.x,
+                    yOffset + 1,
+                    textColor
+            );
 
-            yOffset += 10;
+            yOffset += 11;
         }
         entries.removeIf(e -> !e.enabled && e.x > screenWidth);
     }

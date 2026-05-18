@@ -1,6 +1,7 @@
 package luni.ether.mixin;
 
 import com.google.gson.Gson;
+import luni.ether.core.EtherClient;
 import luni.ether.feature.chat.BroadcastPacket;
 import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.chat.ChatMessage;
@@ -141,6 +142,7 @@ public class ClientPacketListenerMixin {
 
 
         ChatMessage msg = new ChatMessage(uuid, username, clean, serverName, serverIp);
+        msg.gameVersion = EtherClient.MC_VER;
 
 
         msg.message = clean;

@@ -5,6 +5,7 @@ import luni.ether.core.config.ConfigManager;
 import luni.ether.ui.component.UIComponent;
 import luni.ether.ui.render.UIRenderer;
 import luni.ether.feature.module.Module;
+import luni.ether.ui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -103,7 +104,7 @@ public class HudEditorScreen extends Screen {
                 0,
                 width,
                 height,
-                0x66000000
+                ThemeManager.get().getSurface(170)
         );
 
         String title = "HUD EDITOR";
@@ -120,7 +121,7 @@ public class HudEditorScreen extends Screen {
                 title,
                 titleX,
                 8,
-                0xFFFFFFFF
+                ThemeManager.get().getAccent(255)
         );
 
         String helper =
@@ -138,7 +139,7 @@ public class HudEditorScreen extends Screen {
                 helper,
                 helperX,
                 20,
-                0x99FFFFFF
+                ThemeManager.get().getTextSecondary(180)
         );
 
         // dragging
@@ -178,8 +179,10 @@ public class HudEditorScreen extends Screen {
 
             int outline =
                     hovering
-                            ? 0x99FFFFFF
-                            : 0x44FFFFFF;
+                            ? ThemeManager.get().getAccent(220)
+                            : ThemeManager.get().getBorder(180);
+
+            r.rect(c.getX() - 2, c.getY() - 2, c.getWidth() + 4, c.getHeight() + 4, ThemeManager.get().getSurfaceBright(90));
 
             c.render(r, mouseX, mouseY);
 

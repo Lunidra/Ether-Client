@@ -13,27 +13,96 @@ public class ThemeManager {
     static {
 
         register(new Theme(
-                "green",
-                0x00E676,
-                0xFFFFFF,
-                0x000000
+                "purple",
+
+                0xAA66FF, // accent
+                0x7A3DCC, // accent dark
+
+                0xFFFFFF, // text primary
+                0xBFBFBF, // text secondary
+
+                0x121212, // surface
+                0x1E1E1E, // surface bright
+                0x2A2A2A, // border
+
+                0x00E676, // success
+                0xFFB300, // warning
+                0xFF5252  // error
         ));
 
         register(new Theme(
                 "blue",
+
                 0x3D7EFF,
+                0x2A5FCC,
+
                 0xFFFFFF,
-                0x000000
+                0xBFBFBF,
+
+                0x121212,
+                0x1E1E1E,
+                0x2A2A2A,
+
+                0x00E676,
+                0xFFB300,
+                0xFF5252
         ));
 
         register(new Theme(
-                "purple",
-                0xAA66FF,
+                "green",
+
+                0x00E676,
+                0x00B85C,
+
                 0xFFFFFF,
-                0x000000
+                0xBFBFBF,
+
+                0x121212,
+                0x1E1E1E,
+                0x2A2A2A,
+
+                0x00E676,
+                0xFFB300,
+                0xFF5252
         ));
 
-        current = themes.get("purple");
+        register(new Theme(
+                "orange",
+
+                0xFF9800,
+                0xCC7700,
+
+                0xFFFFFF,
+                0xBFBFBF,
+
+                0x121212,
+                0x1E1E1E,
+                0x2A2A2A,
+
+                0x00E676,
+                0xFFB300,
+                0xFF5252
+        ));
+
+        register(new Theme(
+                "pink",
+
+                0xFF4FA3,
+                0xCC2F7D,
+
+                0xFFFFFF,
+                0xBFBFBF,
+
+                0x121212,
+                0x1E1E1E,
+                0x2A2A2A,
+
+                0x00E676,
+                0xFFB300,
+                0xFF5252
+        ));
+
+        current = themes.get("pink");
     }
 
     public static void register(Theme theme) {

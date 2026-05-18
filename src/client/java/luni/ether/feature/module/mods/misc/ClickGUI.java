@@ -21,36 +21,21 @@ public class ClickGUI extends Module {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public void onEnable() {
+
         var mc = Minecraft.getInstance();
 
-        if (enabled) {
-            mc.setScreen(new ClickGuiScreen(this));
-        } else {
-            if (mc.screen instanceof ClickGuiScreen) {
-                mc.screen.onClose();
-            }
+        if (mc.player == null || mc.getWindow() == null) {
+            setEnabled(false);
+            return;
         }
 
-        super.setEnabled(enabled);
+        if (!(mc.screen instanceof ClickGuiScreen)) {
+            mc.setScreen(new ClickGuiScreen(this));
+        }
+
+        setEnabled(false);
     }
-
-
-
-//    @Override
-//    public void onEnable() {
-//        var mc = Minecraft.getInstance();
-//
-//        if (!(mc.screen instanceof ClickGuiScreen)) {
-//            mc.setScreen(new ClickGuiScreen(this));
-//        }
-//
-//        setEnabled(false);
-//    }
-//
-//    @Override
-//    public void onDisable() {
-//    }
 
 
 
