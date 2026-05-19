@@ -71,7 +71,7 @@ public class ChatClient {
     private String getUsername() {
         return mc.getUser().getName();
     }
-    String AuthToken = UUID.randomUUID().toString();
+    String AuthToken = "ECAT0x6e2r3to1";
 
     public boolean isConnected() {
         return connected;
@@ -106,7 +106,7 @@ public class ChatClient {
                             authenticated = false;
 
                             //String accessToken = mc.getUser().getAccessToken();
-                            AuthPacket auth = new AuthPacket(getUUID(), getUsername(), AuthToken);
+                            AuthPacket auth = new AuthPacket(getUUID(), getUsername(), mc.getUser().getAccessToken());
                             String json = new Gson().toJson(auth);
                             send(json);
                             notifyUser("Connected to EtherChat Backend!");

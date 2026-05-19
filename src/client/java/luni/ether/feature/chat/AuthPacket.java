@@ -3,15 +3,19 @@ package luni.ether.feature.chat;
 public class AuthPacket {
 
     public String type = "auth";
-    public String accessToken;
 
     public String uuid;
     public String username;
-    public String token;
 
-    public AuthPacket(String uuid, String username, String token) {
+    public String accessToken;
+
+    public AuthPacket(
+            String uuid,
+            String username,
+            String accessToken
+    ) {
         this.uuid = uuid;
         this.username = username;
-        this.token = token;
+        this.accessToken = accessToken;
     }
 }
