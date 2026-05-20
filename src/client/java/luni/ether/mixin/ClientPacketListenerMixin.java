@@ -21,7 +21,7 @@ public class ClientPacketListenerMixin {
     @Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
     private void ether$handleChat(String message, CallbackInfo ci) {
 
-        System.out.println("[Ether] Chat intercepted: " + message);
+        //System.out.println("[Ether] Chat intercepted: " + message);
 
         if (message.startsWith("``") || message.length() <= 1) {
             ci.cancel();
@@ -154,11 +154,11 @@ public class ClientPacketListenerMixin {
         String wrapped = new Gson().toJson(packet);
 
         if (ChatClient.get().getSessionToken() == null) {
-            System.out.println("[EtherChat] Not authenticated yet");
+            //System.out.println("[EtherChat] Not authenticated yet");
             return;
         }
 
-        System.out.println("SENDING: " + wrapped); // DEBUG
+        //System.out.println("SENDING: " + wrapped); // DEBUG
 
         ChatClient.get().send(wrapped);
 

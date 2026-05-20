@@ -19,9 +19,10 @@ public class NotificationManager {
 
         notifications.add(
                 new Notification(
+                        type.name(),
                         message,
                         type,
-                        2000
+                        2500
                 )
         );
     }

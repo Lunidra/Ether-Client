@@ -42,9 +42,7 @@ public class DiscordRPCManager {
 
                                     ipc.handshake(CLIENT_ID);
 
-                                    System.out.println(
-                                            "[EtherRPC] Connected to Discord."
-                                    );
+                                    //System.out.println("[EtherRPC] Connected to Discord.");
                                 }
                             }
 
@@ -70,9 +68,7 @@ public class DiscordRPCManager {
         thread.setDaemon(true);
         thread.start();
 
-        System.out.println(
-                "[EtherRPC] RPC Thread Started."
-        );
+        //System.out.println("[EtherRPC] RPC Thread Started.");
     }
 
     public static void update() {
@@ -111,8 +107,6 @@ public class DiscordRPCManager {
 
         ipc.close();
 
-        System.out.println(
-                "[EtherRPC] Shutdown."
-        );
+        //System.out.println("[EtherRPC] Shutdown.");
     }
 }

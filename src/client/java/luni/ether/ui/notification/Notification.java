@@ -2,6 +2,7 @@ package luni.ether.ui.notification;
 
 public class Notification {
 
+    private final String title;
     private final String message;
     private final NotificationType type;
 
@@ -13,22 +14,25 @@ public class Notification {
     private float yOffset = 0f;
 
     public Notification(
+            String title,
             String message,
             NotificationType type,
             long duration
     ) {
 
+        this.title = title;
         this.message = message;
         this.type = type;
         this.duration = duration;
 
-        this.startTime =
-                System.currentTimeMillis();
+        this.startTime = System.currentTimeMillis();
     }
 
     // =========================
     // GETTERS
     // =========================
+
+    public String getTitle() { return title; }
 
     public String getMessage() {
         return message;

@@ -86,6 +86,12 @@ public final class EtherClient implements ClientModInitializer {
 					.getHudManager()
 					.register(playtime);
 
+			SocialOverlayComponent socialOverlay = new SocialOverlayComponent();
+
+			this.getContext().getHudManager().register(
+					socialOverlay
+			);
+
 			ClientDirectories.init();
 			LOGGER.info("Client Started!");
 		});

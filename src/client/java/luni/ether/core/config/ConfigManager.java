@@ -81,7 +81,7 @@ public class ConfigManager {
                 GSON.toJson(root, writer);
             }
 
-            System.out.println("[Ether] Config saved");
+            //System.out.println("[Ether] Config saved");
 
         } catch (Exception e) {
             System.err.println("[Ether] Failed to save config");
@@ -147,7 +147,7 @@ public class ConfigManager {
                 }
             }
 
-            System.out.println("[Ether] Config loaded");
+            //System.out.println("[Ether] Config loaded");
 
         } catch (Exception e) {
             System.err.println("[Ether] Failed to load config");
@@ -223,7 +223,7 @@ public class ConfigManager {
                 GSON.toJson(root, writer);
             }
 
-            System.out.println("[Ether] GUI state saved");
+            //System.out.println("[Ether] GUI state saved");
 
         } catch (Exception e) {
             e.printStackTrace();

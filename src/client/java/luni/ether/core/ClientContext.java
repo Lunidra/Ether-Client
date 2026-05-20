@@ -9,6 +9,7 @@ import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.module.ModuleManager;
 import luni.ether.ui.hud.HUDManager;
 import luni.ether.ui.notification.NotificationManager;
+import luni.ether.ui.notification.NotificationRenderer;
 import luni.ether.ui.render.UIRenderer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -54,6 +55,8 @@ public class ClientContext {
             int mouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
 
             this.getHudManager().render(renderer, mouseX, mouseY);
+
+            NotificationRenderer.render(renderer);
 
         });
 

@@ -27,7 +27,7 @@ public class KeybindHandler {
 
                 // ESC = cancel bind
                 if (key == GLFW.GLFW_KEY_ESCAPE) {
-                    System.out.println("[Ether] Bind cancelled for " + listeningModule.getName());
+                    //System.out.println("[Ether] Bind cancelled for " + listeningModule.getName());
                     listeningModule = null;
                     return;
                 }
@@ -35,7 +35,7 @@ public class KeybindHandler {
                 // DELETE = unbind
                 if (key == GLFW.GLFW_KEY_DELETE) {
                     listeningModule.setKey(-1);
-                    System.out.println("[Ether] Unbound " + listeningModule.getName());
+                    //System.out.println("[Ether] Unbound " + listeningModule.getName());
                     listeningModule = null;
                     return;
                 }
@@ -58,7 +58,7 @@ public class KeybindHandler {
         if (event.getAction() == KeyEvent.Action.PRESS) {
             // USE MODULE MANAGER (centralized logic)
             EtherClient.get().getContext().getModuleManager().onKeyPressed(key);
-            System.out.println("KEY: " + key);
+            //System.out.println("KEY: " + key);
         }
 
         // =========================
@@ -73,7 +73,7 @@ public class KeybindHandler {
     // =========================
     public static void startListening(Module module) {
         listeningModule = module;
-        System.out.println("[Ether] Press a key to bind " + module.getName());
+        //System.out.println("[Ether] Press a key to bind " + module.getName());
     }
     public static Module getListeningModule() {
         return listeningModule;

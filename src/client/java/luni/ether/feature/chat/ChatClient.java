@@ -9,6 +9,7 @@ import luni.ether.core.DevFlags;
 import luni.ether.core.EtherClient;
 import luni.ether.core.network.NetworkConfig;
 import luni.ether.feature.module.mods.QoL.ChatEnhancer;
+import luni.ether.ui.notification.NotificationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -44,8 +45,12 @@ public class ChatClient {
     }
 
     private String lastUUID = getUUID();
+    private String lastPresenceServer = "";
+    private String lastPresenceIP = "";
 
-    private final Map<String, String> etherUsers = new HashMap<>();
+
+//    private final Map<String, String> etherUsers = new HashMap<>();
+      private final Map<String, EtherUser> etherUsers = new HashMap<>();
 
     public boolean isEtherUser(UUID uuid) {
         if (mc.player != null && uuid.equals(mc.player.getUUID())) {
@@ -59,7 +64,13 @@ public class ChatClient {
     }
 
     public String getUserServer(UUID uuid) {
-        return etherUsers.get(uuid.toString());
+
+        EtherUser user =
+                etherUsers.get(uuid.toString());
+
+        return user != null
+                ? user.server
+                : "Unknown";
     }
 
 
@@ -110,12 +121,12 @@ public class ChatClient {
                             String json = new Gson().toJson(auth);
                             send(json);
                             notifyUser("Connected to EtherChat Backend!");
-                            System.out.println("[EtherChat] Connected");
+                            //System.out.println("[EtherChat] Connected");
                         }
 
                         @Override
                         public void onTextMessage(WebSocket websocket, String message) {
-                            System.out.println("[EtherChat] RECEIVED: " + message);
+                            //System.out.println("[EtherChat] RECEIVED: " + message);
                             handleIncoming(message);
                             //Minecraft.getInstance().gui.getChat().addMessage(Component.literal(message));
                         }
@@ -126,7 +137,7 @@ public class ChatClient {
                                                    WebSocketFrame clientCloseFrame,
                                                    boolean closedByServer) {
 
-                            System.out.println("[EtherChat] Disconnected");
+                            //System.out.println("[EtherChat] Disconnected");
                             notifyUser("Not connected to EtherChat");
 
                             connected = false;
@@ -138,7 +149,7 @@ public class ChatClient {
                                 new Thread(() -> {
                                     try {
                                         Thread.sleep(3000); // wait 3s
-                                        System.out.println("[EtherChat] Reconnecting...");
+                                        //System.out.println("[EtherChat] Reconnecting...");
                                         connect();
                                     } catch (Exception ignored) {}
                                 }).start();
@@ -159,11 +170,6 @@ public class ChatClient {
         }
     }
 
-//    public void send(String message) {
-//        if (socket != null && socket.isOpen()) {
-//            socket.sendText(message);
-//        }
-//    }
 
     public boolean send(String message) {
         if (socket == null || !socket.isOpen()) {
@@ -185,19 +191,9 @@ public class ChatClient {
 
                 if (obj.has("type") && obj.get("type").getAsString().equals("auth_success")) {
                     sessionToken = obj.get("token").getAsString();
-                    System.out.println("[EtherChat] Authenticated With Token: " + sessionToken);
+    //                System.out.println("[EtherChat] Authenticated With Token: " + sessionToken);
                     authenticated = true;
 
-                    JsonObject presence = new JsonObject();
-
-                    presence.addProperty("type", "presence");
-                    presence.addProperty("server", "Unknown");
-                    presence.addProperty("serverIP", "Unknown");
-                    presence.addProperty("gameVersion", EtherClient.MC_VER);
-
-                    send(presence.toString());
-
-                    // request fresh snapshot
                     send("{\"type\":\"presence_request\"}");
 
 
@@ -219,11 +215,23 @@ public class ChatClient {
                         String uuid = formatUUID(rawUUID);
 
 
-                        String server = u.get("server").getAsString();
+                        EtherUser user = new EtherUser(
+                                uuid,
+                                u.get("username").getAsString()
+                        );
 
-                        etherUsers.put(uuid, server);
+                        user.server =
+                                u.get("server").getAsString();
 
-                        System.out.println("[ETHER PRESENCE] " + etherUsers.size() + " users");
+                        if (u.has("gameVersion")) {
+                            user.gameVersion =
+                                    u.get("gameVersion").getAsString();
+                        }
+
+                        etherUsers.put(uuid, user);
+
+                        //System.out.println("[ETHER PRESENCE] " + etherUsers.size() + " users");
+
                     }
 
                     return;
@@ -234,9 +242,14 @@ public class ChatClient {
                 if (obj.has("type") && obj.get("type").getAsString().equals("user_join")) {
                     String uuid = formatUUID(obj.get("uuid").getAsString());
 
-                    etherUsers.put(uuid, "Unknown"); // no server yet
+                    EtherUser user =
+                            new EtherUser(uuid, "Unknown");
 
-                    System.out.println("[ETHER JOIN] " + uuid);
+                    user.server = "Unknown";
+
+                    etherUsers.put(uuid, user);
+
+                    //System.out.println("[ETHER JOIN] " + uuid);
                     return;
                 }
 
@@ -246,17 +259,35 @@ public class ChatClient {
 
                     etherUsers.remove(uuid);
 
-                    System.out.println("[ETHER LEAVE] " + uuid);
+                    //System.out.println("[ETHER LEAVE] " + uuid);
                     return;
                 }
 
                 if (obj.has("type") && obj.get("type").getAsString().equals("user_update")) {
-                    String uuid = formatUUID(obj.get("uuid").getAsString());
-                    String server = obj.get("server").getAsString();
 
-                    etherUsers.put(uuid, server);
+                    String uuid =
+                            formatUUID(
+                                    obj.get("uuid").getAsString()
+                            );
 
-                    System.out.println("[ETHER UPDATE] " + uuid + " -> " + server);
+                    String server =
+                            obj.get("server").getAsString();
+
+                    EtherUser user =
+                            etherUsers.get(uuid);
+
+                    if (user != null) {
+
+                        user.server = server;
+
+                        if (obj.has("gameVersion")) {
+                            user.gameVersion =
+                                    obj.get("gameVersion").getAsString();
+                        }
+                    }
+
+                    //System.out.println("[ETHER UPDATE] " + uuid + " -> " + server);
+
                     return;
                 }
 
@@ -318,14 +349,6 @@ public class ChatClient {
                     nameColor = "§c";
                 }
 
-//                String formatted = String.format(
-//                        "§7[§bEtherChat§7] §7(%s) %s%s%s§7: §f%s",
-//                        packet.server,
-//                        prefix,
-//                        nameColor,
-//                        packet.username,
-//                        packet.message
-//                );
 
                 //TODO MODULE ADDITIONS
                 boolean mention = false;
@@ -411,7 +434,7 @@ public class ChatClient {
         String currentUUID = getUUID();
 
         if (!currentUUID.equals(lastUUID)) {
-            System.out.println("[EtherChat] Account changed → reconnecting");
+            //System.out.println("[EtherChat] Account changed → reconnecting");
 
             lastUUID = currentUUID;
 
@@ -422,6 +445,74 @@ public class ChatClient {
 
             shouldReconnect = true;
             connect();
+        }
+
+        if (authenticated && connected) {
+
+
+
+            String serverName = "Unknown";
+            String serverIp = "Unknown";
+
+            if (mc.isSingleplayer()) {
+
+                serverName = "Singleplayer";
+                serverIp = "localhost";
+
+            } else {
+
+                if (mc.getConnection() != null
+                        && mc.getConnection().getConnection() != null) {
+
+                    String address =
+                            mc.getConnection()
+                                    .getConnection()
+                                    .getRemoteAddress()
+                                    .toString();
+
+                    if (address.contains("/")) {
+                        serverIp = address.split("/")[0];
+                    } else {
+                        serverIp = address;
+                    }
+
+                    if (serverIp.contains(":")) {
+                        serverIp = serverIp.split(":")[0];
+                    }
+                }
+
+                if (mc.getCurrentServer() != null) {
+
+                    serverName =
+                            mc.getCurrentServer().name != null
+                                    ? mc.getCurrentServer().name
+                                    : "Server";
+                }
+            }
+
+            boolean changed =
+                    !serverName.equals(lastPresenceServer)
+                            || !serverIp.equals(lastPresenceIP);
+
+            if (changed) {
+
+                lastPresenceServer = serverName;
+                lastPresenceIP = serverIp;
+
+                JsonObject presence = new JsonObject();
+
+                presence.addProperty("type", "presence");
+                presence.addProperty("server", serverName);
+                presence.addProperty("serverIP", serverIp);
+                presence.addProperty(
+                        "gameVersion",
+                        EtherClient.MC_VER
+                );
+
+                send(presence.toString());
+
+                //System.out.println("[ETHER PRESENCE] Updated -> " + serverName);
+            }
         }
     }
 
@@ -459,5 +550,9 @@ public class ChatClient {
         } catch (Exception ignored) {}
 
         socket = null;
+    }
+
+    public Map<String, EtherUser> getEtherUsers() {
+        return etherUsers;
     }
 }

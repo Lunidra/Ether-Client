@@ -58,9 +58,7 @@ public class DiscordIPCClient {
 
                     connected = true;
 
-                    System.out.println(
-                            "[EtherRPC] Connected via Windows IPC."
-                    );
+                    //System.out.println("[EtherRPC] Connected via Windows IPC.");
 
                     return true;
                 }
@@ -97,10 +95,7 @@ public class DiscordIPCClient {
                         continue;
                     }
 
-                    System.out.println(
-                            "[EtherRPC] Trying IPC: "
-                                    + socketFile.getAbsolutePath()
-                    );
+                    //System.out.println("[EtherRPC] Trying IPC: " + socketFile.getAbsolutePath());
 
                     UnixDomainSocketAddress address =
                             UnixDomainSocketAddress.of(
@@ -126,20 +121,14 @@ public class DiscordIPCClient {
 
                     connected = true;
 
-                    System.out.println(
-                            "[EtherRPC] Connected via "
-                                    + socketFile.getAbsolutePath()
-                    );
+                    //System.out.println("[EtherRPC] Connected via " + socketFile.getAbsolutePath());
 
                     return true;
                 }
 
             } catch (Exception e) {
 
-                System.out.println(
-                        "[EtherRPC] IPC attempt failed: "
-                                + e.getMessage()
-                );
+                //System.out.println("[EtherRPC] IPC attempt failed: " + e.getMessage());
             }
         }
 
