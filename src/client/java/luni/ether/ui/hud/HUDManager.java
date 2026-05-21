@@ -1,6 +1,8 @@
 package luni.ether.ui.hud;
 
 import luni.ether.core.EtherClient;
+import luni.ether.core.render.UILayer;
+import luni.ether.core.render.UIRenderable;
 import luni.ether.feature.module.mods.render.HUD;
 import luni.ether.ui.animation.AnimationUtil;
 import luni.ether.ui.clickgui.ClickGuiScreen;
@@ -29,10 +31,14 @@ public class HUDManager {
         components.add(component);
     }
 
+
+
+
     public void render(UIRenderer renderer, int mouseX, int mouseY) {
         var mc = Minecraft.getInstance();
 
         if (mc.screen instanceof ClickGuiScreen) return;
+        //System.out.println("HUDManager render");
 
         renderAll(renderer, mouseX, mouseY);
 

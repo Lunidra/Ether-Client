@@ -1,6 +1,7 @@
 package luni.ether.mixin;
 
-import luni.ether.ui.notification.NotificationRenderer;
+import luni.ether.core.EtherClient;
+import luni.ether.core.render.UILayer;
 import luni.ether.ui.render.UIRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -16,7 +17,7 @@ public class ScreenMixin {
             method = "render",
             at = @At("TAIL")
     )
-    private void ether$renderNotifications(
+    private void ether$renderOverlays(
             GuiGraphics context,
             int mouseX,
             int mouseY,
@@ -27,6 +28,14 @@ public class ScreenMixin {
         UIRenderer renderer =
                 new UIRenderer(context);
 
-        NotificationRenderer.render(renderer);
+        EtherClient.get()
+                .getContext()
+                .getUiManager()
+                .renderLayer(
+                        UILayer.OVERLAY,
+                        renderer,
+                        mouseX,
+                        mouseY
+                );
     }
 }

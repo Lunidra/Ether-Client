@@ -34,11 +34,6 @@ public class UIRenderer {
         rect(x, y, w, h, color);
     }
 
-//    public void panel(float x, float y, float w, float h) {
-//        // subtle transparent background
-//        rect(x, y, w, h, 0x66000000);
-//    }
-
     public void panel(float x, float y, float w, float h) {
 
         // base
@@ -53,13 +48,108 @@ public class UIRenderer {
 
 
 
+    //public void pushScissor(int x, int y, int width, int height) {
+    //    gfx.enableScissor(x, y, x + width, y + height);
+    //}
+
     public void pushScissor(int x, int y, int width, int height) {
-        gfx.enableScissor(x, y, x + width, y + height);
+
+        int[] bounds = new int[] {
+                x,
+                y,
+                width,
+                height
+        };
+
+        scissorStack.push(bounds);
+
+        gfx.enableScissor(
+                x,
+                y,
+                x + width,
+                y + height
+        );
     }
+
+    //public void popScissor() {
+    //    gfx.disableScissor();
+    //}
 
     public void popScissor() {
-        gfx.disableScissor();
+
+        if (!scissorStack.isEmpty()) {
+            scissorStack.pop();
+        }
+
+        if (scissorStack.isEmpty()) {
+            gfx.disableScissor();
+            return;
+        }
+
+        int[] bounds = scissorStack.peek();
+
+        gfx.enableScissor(
+                bounds[0],
+                bounds[1],
+                bounds[0] + bounds[2],
+                bounds[1] + bounds[3]
+        );
     }
 
+    public void push() {
+        gfx.pose().pushMatrix();
+    }
 
+    public void pop() {
+        gfx.pose().popMatrix();
+    }
+
+    public void translate(float x, float y) {
+        gfx.pose().translate(x, y);
+    }
+
+    public void scale(float x, float y) {
+        gfx.pose().scale(x, y);
+    }
+
+    public void panel(
+            float x,
+            float y,
+            float width,
+            float height,
+            int color
+    ) {
+        rect(x, y, width, height, color);
+    }
+
+    public void outlinedPanel(
+            float x,
+            float y,
+            float width,
+            float height,
+            int background,
+            int outline
+    ) {
+
+        rect(x, y, width, height, background);
+
+        line(x, y, x + width, y, outline);
+        line(x, y + height, x + width, y + height, outline);
+
+        line(x, y, x, y + height, outline);
+        line(x + width, y, x + width, y + height, outline);
+    }
+
+    public void panelHeader(
+            float x,
+            float y,
+            float width,
+            float height,
+            int color
+    ) {
+
+        rect(x, y, width, height, color);
+    }
+
+    //TODO: 21/05/2026: Luni: NEW RENDERING SYSTEMS
 }

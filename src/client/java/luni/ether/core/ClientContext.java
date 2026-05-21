@@ -4,11 +4,14 @@ import luni.ether.core.config.ConfigManager;
 import luni.ether.core.event.EventBus;
 import luni.ether.core.event.impl.TickEvent;
 import luni.ether.core.input.InputManager;
+import luni.ether.core.render.UILayer;
+import luni.ether.core.render.UIManager;
 import luni.ether.core.window.TitleManager;
 import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.module.ModuleManager;
 import luni.ether.ui.hud.HUDManager;
 import luni.ether.ui.notification.NotificationManager;
+import luni.ether.ui.notification.NotificationOverlay;
 import luni.ether.ui.notification.NotificationRenderer;
 import luni.ether.ui.render.UIRenderer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -22,6 +25,7 @@ public class ClientContext {
     private final TitleManager titleManager;
     private final ModuleManager moduleManager;
     private final HUDManager hudManager;
+    private final UIManager uiManager;
 
     public ClientContext() {
         this.eventBus = new EventBus();
@@ -29,6 +33,7 @@ public class ClientContext {
         this.titleManager = new TitleManager();
         this.moduleManager = new ModuleManager();
         this.hudManager = new HUDManager();
+        this.uiManager = new UIManager();
     }
 
     public void init() {
@@ -43,6 +48,8 @@ public class ClientContext {
         ConfigManager.loadTheme();
         ChatClient.get().connect();
         inputManager.init();
+        //uiManager.register(hudManager);
+        uiManager.register(new NotificationOverlay());
 
 
 
@@ -56,7 +63,17 @@ public class ClientContext {
 
             this.getHudManager().render(renderer, mouseX, mouseY);
 
-            NotificationRenderer.render(renderer);
+            //NotificationRenderer.render(renderer);
+
+            EtherClient.get()
+                    .getContext()
+                    .getUiManager()
+                    .renderLayer(
+                            UILayer.OVERLAY,
+                            renderer,
+                            mouseX,
+                            mouseY
+                    );
 
         });
 
@@ -88,6 +105,9 @@ public class ClientContext {
 
     public HUDManager getHudManager() {
         return hudManager;
+    }
+    public UIManager getUiManager() {
+        return uiManager;
     }
 
 

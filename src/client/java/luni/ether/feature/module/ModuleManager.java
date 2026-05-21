@@ -6,6 +6,7 @@ import luni.ether.core.event.impl.TickEvent;
 import luni.ether.feature.module.mods.QoL.ChatEnhancer;
 import luni.ether.feature.module.mods.misc.ClickGUI;
 import luni.ether.feature.module.mods.misc.HudEditor;
+import luni.ether.feature.module.mods.misc.Sandbox;
 import luni.ether.feature.module.mods.movement.Sprint;
 import luni.ether.feature.module.mods.render.Freelook;
 import luni.ether.feature.module.mods.render.Fullbright;
@@ -34,6 +35,7 @@ public class ModuleManager {
         register(new HudEditor());
         register(new HUD());
 
+        register(new Sandbox());
         // qol
         register(new ChatEnhancer());
 
