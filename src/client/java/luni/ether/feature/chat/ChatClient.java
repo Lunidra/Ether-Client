@@ -49,8 +49,8 @@ public class ChatClient {
     private String lastPresenceIP = "";
 
 
-//    private final Map<String, String> etherUsers = new HashMap<>();
-      private final Map<String, EtherUser> etherUsers = new HashMap<>();
+    //    private final Map<String, String> etherUsers = new HashMap<>();
+    private final Map<String, EtherUser> etherUsers = new HashMap<>();
 
     public boolean isEtherUser(UUID uuid) {
         if (mc.player != null && uuid.equals(mc.player.getUUID())) {
@@ -82,8 +82,6 @@ public class ChatClient {
     private String getUsername() {
         return mc.getUser().getName();
     }
-    String AuthToken = "ECAT0x6e2r3to1";
-
     public boolean isConnected() {
         return connected;
     }
@@ -104,9 +102,16 @@ public class ChatClient {
         try {
             WebSocketFactory factory = new WebSocketFactory();
 
+            if (!NetworkConfig.IS_SECURE_TRANSPORT) {
+                EtherClient.LOGGER.warn(
+                        "[EtherChat] Connecting over an insecure ws:// endpoint ({}). " +
+                                "Use wss:// for anything other than local testing.",
+                        NetworkConfig.CHAT_SERVER
+                );
+            }
+
             socket = factory
-                    .createSocket(NetworkConfig.CHAT_SERVER) // later → wss://
-                    .addHeader("Authorization", "Bearer " + NetworkConfig.CHAT_AUTH) // auth ready
+                    .createSocket(NetworkConfig.CHAT_SERVER)
                     .addListener(new WebSocketAdapter() {
 
 
@@ -116,8 +121,10 @@ public class ChatClient {
                             connected = true;
                             authenticated = false;
 
-                            //String accessToken = mc.getUser().getAccessToken();
-                            AuthPacket auth = new AuthPacket(getUUID(), getUsername(), mc.getUser().getAccessToken());
+                            // Identify only — no access token is sent. The backend must
+                            // challenge us (auth_challenge) and we prove ownership via
+                            // Mojang's session-join flow. See handleAuthChallenge().
+                            AuthPacket auth = new AuthPacket(getUUID(), getUsername());
                             String json = new Gson().toJson(auth);
                             send(json);
                             notifyUser("Connected to EtherChat Backend!");
@@ -189,9 +196,15 @@ public class ChatClient {
             try {
                 JsonObject obj = JsonParser.parseString(msg).getAsJsonObject();
 
+                if (obj.has("type") && obj.get("type").getAsString().equals("auth_challenge")) {
+                    String serverId = obj.get("serverId").getAsString();
+                    handleAuthChallenge(serverId);
+                    return;
+                }
+
                 if (obj.has("type") && obj.get("type").getAsString().equals("auth_success")) {
                     sessionToken = obj.get("token").getAsString();
-    //                System.out.println("[EtherChat] Authenticated With Token: " + sessionToken);
+                    //                System.out.println("[EtherChat] Authenticated With Token: " + sessionToken);
                     authenticated = true;
 
                     send("{\"type\":\"presence_request\"}");
@@ -514,6 +527,50 @@ public class ChatClient {
                 //System.out.println("[ETHER PRESENCE] Updated -> " + serverName);
             }
         }
+    }
+
+    /**
+     * Proves ownership of the account to the backend using Mojang's own
+     * session-join mechanism (the same check a vanilla server does),
+     * instead of handing over our access token to a third party.
+     * <p>
+     * 1. Backend sends us a random serverId (auth_challenge).
+     * 2. We call Mojang's session service joinServer(profile, accessToken, serverId)
+     *    directly from the client — the access token is used locally and never
+     *    leaves the device.
+     * 3. We tell the backend we're done (auth_verify + serverId).
+     * 4. The backend independently calls Mojang's hasJoined endpoint with our
+     *    username + serverId to confirm the join actually happened before
+     *    marking the connection authenticated (auth_success).
+     * <p>
+     * This runs the actual network call off the render thread since it's a
+     * blocking HTTP request to Mojang.
+     */
+    private void handleAuthChallenge(String serverId) {
+        new Thread(() -> {
+            try {
+                // Minecraft's session service field isn't consistently exposed via a
+                // public getter across versions, but its Mojang-mapped field name is
+                // stable ("minecraftSessionService"), so we pull it directly rather
+                // than guess at a getter method name.
+                java.lang.reflect.Field field = Minecraft.class.getDeclaredField("minecraftSessionService");
+                field.setAccessible(true);
+                com.mojang.authlib.minecraft.MinecraftSessionService sessionService =
+                        (com.mojang.authlib.minecraft.MinecraftSessionService) field.get(mc);
+
+                java.util.UUID profileId = mc.getUser().getProfileId();
+
+                sessionService.joinServer(profileId, mc.getUser().getAccessToken(), serverId);
+
+                send(new Gson().toJson(new AuthVerifyPacket(serverId)));
+
+            } catch (Exception e) {
+                // Session join failed (offline account, expired token, Mojang
+                // outage, etc.) — surface it, don't silently pretend we're
+                // authenticated.
+                mc.execute(() -> notifyUser("Failed to verify session with Mojang: " + e.getMessage()));
+            }
+        }, "Ether-SessionJoin").start();
     }
 
     public void notifyUser(String msg) {
