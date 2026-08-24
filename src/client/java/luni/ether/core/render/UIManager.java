@@ -20,6 +20,40 @@ public class UIManager {
         renderables.remove(renderable);
     }
 
+
+    public void renderHud(
+            UIRenderer renderer,
+            int mouseX,
+            int mouseY
+    ) {
+        renderLayer(
+                UILayer.HUD,
+                renderer,
+                mouseX,
+                mouseY
+        );
+
+        renderLayer(
+                UILayer.OVERLAY,
+                renderer,
+                mouseX,
+                mouseY
+        );
+    }
+
+    public void renderOverlays(
+            UIRenderer renderer,
+            int mouseX,
+            int mouseY
+    ) {
+        renderLayer(
+                UILayer.OVERLAY,
+                renderer,
+                mouseX,
+                mouseY
+        );
+    }
+
     public void renderLayer(
             UILayer layer,
             UIRenderer renderer,

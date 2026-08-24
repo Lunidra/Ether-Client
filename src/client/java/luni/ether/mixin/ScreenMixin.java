@@ -28,14 +28,16 @@ public class ScreenMixin {
         UIRenderer renderer =
                 new UIRenderer(context);
 
-        EtherClient.get()
-                .getContext()
-                .getUiManager()
-                .renderLayer(
-                        UILayer.OVERLAY,
-                        renderer,
-                        mouseX,
-                        mouseY
-                );
+//        EtherClient.get()
+//                .getContext()
+//                .getUiManager()
+//                .renderLayer(
+//                        UILayer.OVERLAY,
+//                        renderer,
+//                        mouseX,
+//                        mouseY
+//                );
+
+        EtherClient.get().getContext().getUiManager().renderOverlays(renderer, mouseX, mouseY);
     }
 }

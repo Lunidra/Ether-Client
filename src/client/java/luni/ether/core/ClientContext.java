@@ -65,23 +65,23 @@ public class ClientContext {
 
             //NotificationRenderer.render(renderer);
 
-            uiManager.renderLayer(
-                    UILayer.HUD,
-                    renderer,
-                    mouseX,
-                    mouseY
-            );
+//            uiManager.renderLayer(
+//                    UILayer.HUD,
+//                    renderer,
+//                    mouseX,
+//                    mouseY
+//            );
 
-//            EtherClient.get()
-//                    .getContext()
-//                    .getUiManager()
 
-                    uiManager.renderLayer(
-                            UILayer.OVERLAY,
-                            renderer,
-                            mouseX,
-                            mouseY
-                    );
+
+//                    uiManager.renderLayer(
+//                            UILayer.OVERLAY,
+//                            renderer,
+//                            mouseX,
+//                            mouseY
+//                    );
+
+            uiManager.renderHud(renderer, mouseX, mouseY);
 
         });
 
