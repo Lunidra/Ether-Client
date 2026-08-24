@@ -48,7 +48,7 @@ public class ClientContext {
         ConfigManager.loadTheme();
         ChatClient.get().connect();
         inputManager.init();
-        //uiManager.register(hudManager);
+        uiManager.register(hudManager);
         uiManager.register(new NotificationOverlay());
 
 
@@ -61,14 +61,22 @@ public class ClientContext {
             int mouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
             int mouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
 
-            this.getHudManager().render(renderer, mouseX, mouseY);
+            //this.getHudManager().render(renderer, mouseX, mouseY);
 
             //NotificationRenderer.render(renderer);
 
-            EtherClient.get()
-                    .getContext()
-                    .getUiManager()
-                    .renderLayer(
+            uiManager.renderLayer(
+                    UILayer.HUD,
+                    renderer,
+                    mouseX,
+                    mouseY
+            );
+
+//            EtherClient.get()
+//                    .getContext()
+//                    .getUiManager()
+
+                    uiManager.renderLayer(
                             UILayer.OVERLAY,
                             renderer,
                             mouseX,

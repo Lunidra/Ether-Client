@@ -51,7 +51,11 @@ dependencies {
 	implementation "net.raphimc:MinecraftAuth:5.0.0"
 	include(implementation 'com.neovisionaries:nv-websocket-client:2.14')
 
-	//modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}")
+	modLocalRuntime("com.terraformersmc:modmenu:17.0.0")
+	modImplementation("maven.modrinth:placeholder-api:2.8.2+1.21.10")
+	modImplementation("maven.modrinth:sodium:ZPWbiWXz")
+	modImplementation("maven.modrinth:sodium-extra:yqY1efrC")
+	modImplementation("maven.modrinth:iris:TSXvi2yD")
 
 	implementation("org.antlr:antlr4-runtime:4.13.1")
 	implementation("io.github.douira:glsl-transformer:3.0.0-pre3")

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HUDManager {
+public class HUDManager implements UIRenderable {
 
     private final Minecraft mc = Minecraft.getInstance();
     private final List<UIComponent> components = new ArrayList<>();
@@ -34,6 +34,7 @@ public class HUDManager {
 
 
 
+    @Override
     public void render(UIRenderer renderer, int mouseX, int mouseY) {
         var mc = Minecraft.getInstance();
 
@@ -82,6 +83,11 @@ public class HUDManager {
         }
 
         return null;
+    }
+
+    @Override
+    public UILayer getLayer() {
+        return UILayer.HUD;
     }
 
 
