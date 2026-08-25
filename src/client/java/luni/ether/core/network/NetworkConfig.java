@@ -8,4 +8,6 @@ public class NetworkConfig {
     public static final String CHAT_SERVER = System.getenv().getOrDefault("ETHER_CHAT_SERVER", "ws://127.0.0.1:2832/ws");
 
     public static final boolean IS_SECURE_TRANSPORT = CHAT_SERVER.startsWith("wss://");
+
+    public static final boolean DEV_AUTH = true;
 }

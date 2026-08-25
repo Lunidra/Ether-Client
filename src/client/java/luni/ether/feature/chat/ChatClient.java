@@ -546,32 +546,99 @@ public class ChatClient {
      * This runs the actual network call off the render thread since it's a
      * blocking HTTP request to Mojang.
      */
+//    private void handleAuthChallenge(String serverId) {
+//        new Thread(() -> {
+//            try {
+//                // Minecraft's session service field isn't consistently exposed via a
+//                // public getter across versions, but its Mojang-mapped field name is
+//                // stable ("minecraftSessionService"), so we pull it directly rather
+//                // than guess at a getter method name.
+//                java.lang.reflect.Field field = Minecraft.class.getDeclaredField("minecraftSessionService");
+//                field.setAccessible(true);
+//                com.mojang.authlib.minecraft.MinecraftSessionService sessionService =
+//                        (com.mojang.authlib.minecraft.MinecraftSessionService) field.get(mc);
+//
+//                java.util.UUID profileId = mc.getUser().getProfileId();
+//
+//                sessionService.joinServer(profileId, mc.getUser().getAccessToken(), serverId);
+//
+//                send(new Gson().toJson(new AuthVerifyPacket(serverId)));
+//
+//            } catch (Exception e) {
+//                // Session join failed (offline account, expired token, Mojang
+//                // outage, etc.) — surface it, don't silently pretend we're
+//                // authenticated.
+//                mc.execute(() -> notifyUser("Failed to verify session with Mojang: " + e.getMessage()));
+//            }
+//        }, "Ether-SessionJoin").start();
+//    }
+
+
     private void handleAuthChallenge(String serverId) {
         new Thread(() -> {
             try {
-                // Minecraft's session service field isn't consistently exposed via a
-                // public getter across versions, but its Mojang-mapped field name is
-                // stable ("minecraftSessionService"), so we pull it directly rather
-                // than guess at a getter method name.
-                java.lang.reflect.Field field = Minecraft.class.getDeclaredField("minecraftSessionService");
-                field.setAccessible(true);
+                EtherClient.LOGGER.info(
+                        "[EtherChat] Received authentication challenge: {}",
+                        serverId
+                );
+
                 com.mojang.authlib.minecraft.MinecraftSessionService sessionService =
-                        (com.mojang.authlib.minecraft.MinecraftSessionService) field.get(mc);
+                        mc.services().sessionService();
 
-                java.util.UUID profileId = mc.getUser().getProfileId();
+                if (sessionService == null) {
+                    throw new IllegalStateException(
+                            "MinecraftSessionService is null"
+                    );
+                }
 
-                sessionService.joinServer(profileId, mc.getUser().getAccessToken(), serverId);
+                java.util.UUID profileId =
+                        mc.getUser().getProfileId();
 
-                send(new Gson().toJson(new AuthVerifyPacket(serverId)));
+                EtherClient.LOGGER.info(
+                        "[EtherChat] Calling Minecraft session joinServer() for {}",
+                        profileId
+                );
+
+                sessionService.joinServer(
+                        profileId,
+                        mc.getUser().getAccessToken(),
+                        serverId
+                );
+
+                sessionService.
+
+                EtherClient.LOGGER.info(
+                        "[EtherChat] Mojang session joinServer() succeeded"
+                );
+
+                AuthVerifyPacket verify =
+                        new AuthVerifyPacket(serverId);
+
+                String json =
+                        new Gson().toJson(verify);
+
+                EtherClient.LOGGER.info(
+                        "[EtherChat] Sending auth_verify"
+                );
+
+                send(json);
 
             } catch (Exception e) {
-                // Session join failed (offline account, expired token, Mojang
-                // outage, etc.) — surface it, don't silently pretend we're
-                // authenticated.
-                mc.execute(() -> notifyUser("Failed to verify session with Mojang: " + e.getMessage()));
+
+                EtherClient.LOGGER.error(
+                        "[EtherChat] Authentication challenge failed",
+                        e
+                );
+
+                notifyUser(
+                        "EtherChat authentication failed: "
+                                + e.getClass().getSimpleName()
+                );
             }
-        }, "Ether-SessionJoin").start();
+        }, "EtherChat-Auth").start();
     }
+
+
 
     public void notifyUser(String msg) {
         Minecraft mc = Minecraft.getInstance();
