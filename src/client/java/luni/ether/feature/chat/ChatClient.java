@@ -605,7 +605,7 @@ public class ChatClient {
                         serverId
                 );
 
-                sessionService.
+
 
                 EtherClient.LOGGER.info(
                         "[EtherChat] Mojang session joinServer() succeeded"
