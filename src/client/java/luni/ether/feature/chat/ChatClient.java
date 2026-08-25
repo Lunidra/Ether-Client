@@ -252,17 +252,61 @@ public class ChatClient {
 
 
                 // user join
+//                if (obj.has("type") && obj.get("type").getAsString().equals("user_join")) {
+//                    String uuid = formatUUID(obj.get("uuid").getAsString());
+//
+//                    EtherUser user =
+//                            new EtherUser(uuid, "Unknown");
+//
+//                    user.server = "Unknown";
+//
+//                    etherUsers.put(uuid, user);
+//
+//                    //System.out.println("[ETHER JOIN] " + uuid);
+//                    return;
+//                }
+
+
+                // user join
                 if (obj.has("type") && obj.get("type").getAsString().equals("user_join")) {
-                    String uuid = formatUUID(obj.get("uuid").getAsString());
 
-                    EtherUser user =
-                            new EtherUser(uuid, "Unknown");
+                    String uuid = formatUUID(
+                            obj.get("uuid").getAsString()
+                    );
 
-                    user.server = "Unknown";
+                    String username = obj.has("username")
+                            ? obj.get("username").getAsString()
+                            : "Unknown";
 
-                    etherUsers.put(uuid, user);
+                    String server = obj.has("server")
+                            ? obj.get("server").getAsString()
+                            : "Unknown";
 
-                    //System.out.println("[ETHER JOIN] " + uuid);
+                    String gameVersion = obj.has("gameVersion")
+                            ? obj.get("gameVersion").getAsString()
+                            : "Unknown";
+
+                    EtherUser user = etherUsers.get(uuid);
+
+                    if (user == null) {
+                        user = new EtherUser(
+                                uuid,
+                                username
+                        );
+
+                        etherUsers.put(uuid, user);
+                    } else if (!username.equals("Unknown")) {
+                        user.username = username;
+                    }
+
+                    if (!server.equals("Unknown")) {
+                        user.server = server;
+                    }
+
+                    if (!gameVersion.equals("Unknown")) {
+                        user.gameVersion = gameVersion;
+                    }
+
                     return;
                 }
 
@@ -276,30 +320,70 @@ public class ChatClient {
                     return;
                 }
 
+//                if (obj.has("type") && obj.get("type").getAsString().equals("user_update")) {
+//
+//                    String uuid =
+//                            formatUUID(
+//                                    obj.get("uuid").getAsString()
+//                            );
+//
+//                    String server =
+//                            obj.get("server").getAsString();
+//
+//                    EtherUser user =
+//                            etherUsers.get(uuid);
+//
+//                    if (user != null) {
+//
+//                        user.server = server;
+//
+//                        if (obj.has("gameVersion")) {
+//                            user.gameVersion =
+//                                    obj.get("gameVersion").getAsString();
+//                        }
+//                    }
+//
+//                    //System.out.println("[ETHER UPDATE] " + uuid + " -> " + server);
+//
+//                    return;
+//                }
+
                 if (obj.has("type") && obj.get("type").getAsString().equals("user_update")) {
 
-                    String uuid =
-                            formatUUID(
-                                    obj.get("uuid").getAsString()
-                            );
+                    String uuid = formatUUID(
+                            obj.get("uuid").getAsString()
+                    );
 
-                    String server =
-                            obj.get("server").getAsString();
+                    EtherUser user = etherUsers.get(uuid);
 
-                    EtherUser user =
-                            etherUsers.get(uuid);
+                    if (user == null) {
+                        user = new EtherUser(
+                                uuid,
+                                obj.has("username")
+                                        ? obj.get("username").getAsString()
+                                        : "Unknown"
+                        );
 
-                    if (user != null) {
+                        etherUsers.put(uuid, user);
+                    }
 
-                        user.server = server;
+                    if (obj.has("username")) {
+                        String username = obj.get("username").getAsString();
 
-                        if (obj.has("gameVersion")) {
-                            user.gameVersion =
-                                    obj.get("gameVersion").getAsString();
+                        if (!username.isEmpty()) {
+                            user.username = username;
                         }
                     }
 
-                    //System.out.println("[ETHER UPDATE] " + uuid + " -> " + server);
+                    if (obj.has("server")) {
+                        user.server =
+                                obj.get("server").getAsString();
+                    }
+
+                    if (obj.has("gameVersion")) {
+                        user.gameVersion =
+                                obj.get("gameVersion").getAsString();
+                    }
 
                     return;
                 }
@@ -581,6 +665,16 @@ public class ChatClient {
                         "[EtherChat] Received authentication challenge: {}",
                         serverId
                 );
+
+                if (DevFlags.DEV_MODE) {
+                    EtherClient.LOGGER.info(
+                            "[EtherChat] Development mode: skipping Mojang session join"
+                    );
+
+                    AuthVerifyPacket verify = new AuthVerifyPacket(serverId);
+                    send(new Gson().toJson(verify));
+                    return;
+                }
 
                 com.mojang.authlib.minecraft.MinecraftSessionService sessionService =
                         mc.services().sessionService();
