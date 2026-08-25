@@ -23,7 +23,7 @@ public class ClientPacketListenerMixin {
 
         //System.out.println("[Ether] Chat intercepted: " + message);
 
-        if (message.startsWith("``") || message.length() <= 1) {
+        if (message.startsWith("``")) { // || message.length() <= 1) {
             ci.cancel();
 
             String raw = message.substring(2).trim();
