@@ -311,43 +311,29 @@ public class ChatClient {
                 }
 
                 // user leave
-                if (obj.has("type") && obj.get("type").getAsString().equals("user_leave")) {
-                    String uuid = formatUUID(obj.get("uuid").getAsString());
-
-                    etherUsers.remove(uuid);
-
-                    //System.out.println("[ETHER LEAVE] " + uuid);
-                    return;
-                }
-
-//                if (obj.has("type") && obj.get("type").getAsString().equals("user_update")) {
+//                if (obj.has("type") && obj.get("type").getAsString().equals("user_leave")) {
+//                    String uuid = formatUUID(obj.get("uuid").getAsString());
 //
-//                    String uuid =
-//                            formatUUID(
-//                                    obj.get("uuid").getAsString()
-//                            );
+//                    etherUsers.remove(uuid);
 //
-//                    String server =
-//                            obj.get("server").getAsString();
-//
-//                    EtherUser user =
-//                            etherUsers.get(uuid);
-//
-//                    if (user != null) {
-//
-//                        user.server = server;
-//
-//                        if (obj.has("gameVersion")) {
-//                            user.gameVersion =
-//                                    obj.get("gameVersion").getAsString();
-//                        }
-//                    }
-//
-//                    //System.out.println("[ETHER UPDATE] " + uuid + " -> " + server);
-//
+//                    //System.out.println("[ETHER LEAVE] " + uuid);
 //                    return;
 //                }
 
+                // user leave
+                if (obj.has("type") &&
+                        obj.get("type").getAsString().equals("user_leave")) {
+
+                    String uuid = formatUUID(
+                            obj.get("uuid").getAsString()
+                    );
+
+                    etherUsers.remove(uuid);
+
+                    return;
+                }
+
+                //USER_UPDATE
                 if (obj.has("type") && obj.get("type").getAsString().equals("user_update")) {
 
                     String uuid = formatUUID(
