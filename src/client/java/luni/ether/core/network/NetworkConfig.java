@@ -8,11 +8,11 @@ public class NetworkConfig {
     //
 
     //TODO: localhost
-    //public static final String CHAT_SERVER = System.getenv().getOrDefault("ETHER_CHAT_SERVER", "ws://localhost:2832/ws");
+    public static final String CHAT_SERVER = System.getenv().getOrDefault("ETHER_CHAT_SERVER", "ws://localhost:2832/ws");
 
 
     //TODO: Public
-    public static final String CHAT_SERVER = System.getenv().getOrDefault("ETHER_CHAT_SERVER", "wss://eapi.noxio.uk/ws");
+    //public static final String CHAT_SERVER = System.getenv().getOrDefault("ETHER_CHAT_SERVER", "wss://eapi.noxio.uk/ws");
 
 
     public static final boolean IS_SECURE_TRANSPORT = CHAT_SERVER.startsWith("wss://");

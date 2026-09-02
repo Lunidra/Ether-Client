@@ -2,7 +2,6 @@ package luni.ether.mixin;
 
 import com.google.gson.Gson;
 import luni.ether.core.EtherClient;
-import luni.ether.feature.chat.BroadcastPacket;
 import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.chat.ChatMessage;
 import luni.ether.feature.chat.ChatPacket;
@@ -23,51 +22,7 @@ public class ClientPacketListenerMixin {
 
         //System.out.println("[Ether] Chat intercepted: " + message);
 
-        if (message.startsWith("``")) { // || message.length() <= 1) {
-            ci.cancel();
 
-            String raw = message.substring(2).trim();
-
-            if (raw.isEmpty()) return;
-
-            ChatClient chat = ChatClient.get();
-
-            if (!chat.isConnected()) {
-                chat.notifyUser("Not connected to EtherChat");
-                return;
-            }
-
-            if (!chat.isAuthenticated()) {
-                chat.notifyUser("Authenticating...");
-                return;
-            }
-
-            // Optional: enforce command format
-            String lower = raw.toLowerCase();
-
-            String content;
-
-            // support both broadcast + bc
-            if (lower.startsWith("broadcast ")) {
-                content = raw.substring("broadcast ".length());
-
-            } else if (lower.startsWith("bc ")) {
-                content = raw.substring("bc ".length());
-
-            } else {
-                chat.notifyUser("Usage: ``broadcast/``bc <message>");
-                return;
-            }
-
-            content = content.trim();
-            if (content.isEmpty()) return;
-
-            BroadcastPacket packet = new BroadcastPacket(content);
-            packet.sessionToken = chat.getSessionToken();
-
-            chat.send(new Gson().toJson(packet));
-            return;
-        }
 
 
         if (!message.startsWith("!") || message.length() <= 1) {
