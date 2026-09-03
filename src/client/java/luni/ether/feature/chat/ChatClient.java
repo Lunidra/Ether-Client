@@ -38,12 +38,6 @@ public class ChatClient {
 
     private Minecraft mc = Minecraft.getInstance();
 
-    private String sessionToken;
-
-    public String getSessionToken() {
-        return sessionToken;
-    }
-
     private String lastUUID = getUUID();
     private String lastPresenceServer = "";
     private String lastPresenceIP = "";
@@ -149,7 +143,6 @@ public class ChatClient {
 
                             connected = false;
                             authenticated = false;
-                            sessionToken = null;
                             socket = null;
 
                             if (shouldReconnect) {
@@ -203,36 +196,23 @@ public class ChatClient {
                 }
 
                 if (obj.has("type") && obj.get("type").getAsString().equals("auth_success")) {
-                    sessionToken = obj.get("token").getAsString();
-                    //                System.out.println("[EtherChat] Authenticated With Token: " + sessionToken);
                     authenticated = true;
-
                     send("{\"type\":\"presence_request\"}");
-
-
                     return;
                 }
 
                 if (obj.has("type") && obj.get("type").getAsString().equals("presence_sync")) {
-
                     etherUsers.clear();
-
                     var arr = obj.getAsJsonArray("users");
-
                     for (var el : arr) {
                         var u = el.getAsJsonObject();
-
                         String rawUUID = u.get("uuid").getAsString();
-
                         // normalize BOTH sides to same format
                         String uuid = formatUUID(rawUUID);
-
-
                         EtherUser user = new EtherUser(
                                 uuid,
                                 u.get("username").getAsString()
                         );
-
                         user.server =
                                 u.get("server").getAsString();
 
@@ -243,29 +223,10 @@ public class ChatClient {
 
                         etherUsers.put(uuid, user);
 
-                        //System.out.println("[ETHER PRESENCE] " + etherUsers.size() + " users");
-
                     }
 
                     return;
                 }
-
-
-                // user join
-//                if (obj.has("type") && obj.get("type").getAsString().equals("user_join")) {
-//                    String uuid = formatUUID(obj.get("uuid").getAsString());
-//
-//                    EtherUser user =
-//                            new EtherUser(uuid, "Unknown");
-//
-//                    user.server = "Unknown";
-//
-//                    etherUsers.put(uuid, user);
-//
-//                    //System.out.println("[ETHER JOIN] " + uuid);
-//                    return;
-//                }
-
 
                 // user join
                 if (obj.has("type") && obj.get("type").getAsString().equals("user_join")) {
@@ -309,16 +270,6 @@ public class ChatClient {
 
                     return;
                 }
-
-                // user leave
-//                if (obj.has("type") && obj.get("type").getAsString().equals("user_leave")) {
-//                    String uuid = formatUUID(obj.get("uuid").getAsString());
-//
-//                    etherUsers.remove(uuid);
-//
-//                    //System.out.println("[ETHER LEAVE] " + uuid);
-//                    return;
-//                }
 
                 // user leave
                 if (obj.has("type") &&
@@ -374,17 +325,9 @@ public class ChatClient {
                     return;
                 }
 
-
-
-
-
-
                 if (obj.has("type") && obj.get("type").getAsString().equals("broadcast")) {
                     String message = obj.get("message").getAsString();
                     String sender = obj.get("sender").getAsString();
-
-
-
 
                     String formatted = String.format(
                             "§6§l[ETHER BROADCAST] §r§e%s§7: §f%s",
@@ -400,23 +343,12 @@ public class ChatClient {
                     return;
                 }
 
-
-
-
-
-
                 ChatMessage packet = gson.fromJson(msg, ChatMessage.class);
 
 
 
 
-
-//                if (packet.uuid != null && packet.uuid.equals(localUUID)) {
-//                    return; // ✅ skip ONLY your own messages
-//                }
                 boolean isSelf = packet.uuid != null && packet.uuid.equals(getUUID());
-
-                //String cleanMsg = packet.message.replace("[self]", "");
 
                 String prefix = "";
                 String nameColor = "§f";
@@ -431,7 +363,6 @@ public class ChatClient {
                     prefix = "§o§7[§4BETA TESTER§7] ";
                     nameColor = "§c";
                 }
-
 
                 //TODO MODULE ADDITIONS
                 boolean mention = false;
@@ -502,8 +433,6 @@ public class ChatClient {
 //                            net.minecraft.network.chat.Component.literal(formatted),
 //                            false // THIS puts it in chat
 
-
-
                     );
                 }
 
@@ -531,9 +460,6 @@ public class ChatClient {
         }
 
         if (authenticated && connected) {
-
-
-
             String serverName = "Unknown";
             String serverIp = "Unknown";
 
@@ -616,33 +542,6 @@ public class ChatClient {
      * This runs the actual network call off the render thread since it's a
      * blocking HTTP request to Mojang.
      */
-//    private void handleAuthChallenge(String serverId) {
-//        new Thread(() -> {
-//            try {
-//                // Minecraft's session service field isn't consistently exposed via a
-//                // public getter across versions, but its Mojang-mapped field name is
-//                // stable ("minecraftSessionService"), so we pull it directly rather
-//                // than guess at a getter method name.
-//                java.lang.reflect.Field field = Minecraft.class.getDeclaredField("minecraftSessionService");
-//                field.setAccessible(true);
-//                com.mojang.authlib.minecraft.MinecraftSessionService sessionService =
-//                        (com.mojang.authlib.minecraft.MinecraftSessionService) field.get(mc);
-//
-//                java.util.UUID profileId = mc.getUser().getProfileId();
-//
-//                sessionService.joinServer(profileId, mc.getUser().getAccessToken(), serverId);
-//
-//                send(new Gson().toJson(new AuthVerifyPacket(serverId)));
-//
-//            } catch (Exception e) {
-//                // Session join failed (offline account, expired token, Mojang
-//                // outage, etc.) — surface it, don't silently pretend we're
-//                // authenticated.
-//                mc.execute(() -> notifyUser("Failed to verify session with Mojang: " + e.getMessage()));
-//            }
-//        }, "Ether-SessionJoin").start();
-//    }
-
 
     private void handleAuthChallenge(String serverId) {
         new Thread(() -> {
@@ -684,8 +583,6 @@ public class ChatClient {
                         mc.getUser().getAccessToken(),
                         serverId
                 );
-
-
 
                 EtherClient.LOGGER.info(
                         "[EtherChat] Mojang session joinServer() succeeded"

@@ -105,13 +105,10 @@ public class ClientPacketListenerMixin {
         String json = new Gson().toJson(msg);
 
         ChatPacket packet = new ChatPacket(msg);
-        packet.sessionToken = ChatClient.get().getSessionToken();
+
         String wrapped = new Gson().toJson(packet);
 
-        if (ChatClient.get().getSessionToken() == null) {
-            //System.out.println("[EtherChat] Not authenticated yet");
-            return;
-        }
+
 
         //System.out.println("SENDING: " + wrapped); // DEBUG
 
