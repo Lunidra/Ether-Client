@@ -5,7 +5,6 @@ import luni.ether.core.discord.DiscordRPCManager;
 import luni.ether.core.input.KeybindHandler;
 import luni.ether.core.io.ClientDirectories;
 
-import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.module.mods.render.HUD;
 import luni.ether.ui.hud.impl.*;
 import luni.ether.ui.notification.NotificationManager;
@@ -98,7 +97,6 @@ public final class EtherClient implements ClientModInitializer {
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			ConfigManager.save();
-			ChatClient.get().shutdown();
 			DiscordRPCManager.shutdown();
 		});
 	}

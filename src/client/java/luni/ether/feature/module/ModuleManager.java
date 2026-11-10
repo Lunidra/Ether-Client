@@ -3,7 +3,6 @@ package luni.ether.feature.module;
 import luni.ether.core.EtherClient;
 import luni.ether.core.event.EventHandler;
 import luni.ether.core.event.impl.TickEvent;
-import luni.ether.feature.module.mods.QoL.ChatEnhancer;
 import luni.ether.feature.module.mods.misc.ClickGUI;
 import luni.ether.feature.module.mods.misc.HudEditor;
 import luni.ether.feature.module.mods.movement.Sprint;
@@ -35,7 +34,6 @@ public class ModuleManager {
         register(new HUD());
 
         // qol
-        register(new ChatEnhancer());
 
         EtherClient.get()
                 .getContext()

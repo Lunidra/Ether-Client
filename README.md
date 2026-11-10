@@ -32,9 +32,6 @@ The current development focus is cleaning up the UI architecture and building a 
 
 * Microsoft / Minecraft account support
 * Ether authentication
-* EtherChat
-* Realtime user presence
-* WebSocket communication
 * Discord Rich Presence
 
 ### UI
@@ -842,7 +839,6 @@ Ether
 │
 ├── feature
 │   ├── account
-│   ├── chat
 │   ├── module
 │   └── setting
 │

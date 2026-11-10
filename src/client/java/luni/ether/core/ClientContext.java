@@ -5,7 +5,6 @@ import luni.ether.core.event.EventBus;
 import luni.ether.core.event.impl.TickEvent;
 import luni.ether.core.input.InputManager;
 import luni.ether.core.window.TitleManager;
-import luni.ether.feature.chat.ChatClient;
 import luni.ether.feature.module.ModuleManager;
 import luni.ether.ui.hud.HUDManager;
 import luni.ether.ui.notification.NotificationManager;
@@ -16,6 +15,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 
 public class ClientContext {
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ClientContext.class);
 
     private final EventBus eventBus;
     private final InputManager inputManager;
@@ -32,6 +32,7 @@ public class ClientContext {
     }
 
     public void init() {
+        LOGGER.info("[Ether] Initializing client context...");
         titleManager.init();
         moduleManager.init();
         ConfigManager.load();
@@ -41,10 +42,9 @@ public class ClientContext {
                         .getHudManager()
         );
         ConfigManager.loadTheme();
-        ChatClient.get().connect();
         inputManager.init();
 
-
+        LOGGER.info("[Ether] Core components initialized");
 
         //  THIS IS THE MISSING LINK
         HudRenderCallback.EVENT.register((ctx, delta) -> {
@@ -62,7 +62,7 @@ public class ClientContext {
 
         //TODO CLIENT TICK EVENT
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            ChatClient.get().tick();
+
             if (client.player == null) return;
 
 

@@ -6,7 +6,6 @@
 		"ClientBrandMixin",
 		"MinecraftMixin",
 		"TitleScreenMixin",
-		"ClientPacketListenerMixin",
 		"OptionInstanceAccessor",
 		"ScreenMixin"
 	],

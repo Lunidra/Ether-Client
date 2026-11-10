@@ -3,6 +3,7 @@ package luni.ether.core.discord;
 import net.minecraft.client.Minecraft;
 
 public class DiscordRPCManager {
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DiscordRPCManager.class);
 
     // YOUR DISCORD APP ID
     private static final String CLIENT_ID =
@@ -42,7 +43,7 @@ public class DiscordRPCManager {
 
                                     ipc.handshake(CLIENT_ID);
 
-                                    //System.out.println("[EtherRPC] Connected to Discord.");
+                                    LOGGER.info("[EtherRPC] Connected to Discord.");
                                 }
                             }
 
@@ -97,7 +98,7 @@ public class DiscordRPCManager {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[EtherRPC] RPC update failed", e);
         }
     }
 
@@ -107,6 +108,6 @@ public class DiscordRPCManager {
 
         ipc.close();
 
-        //System.out.println("[EtherRPC] Shutdown.");
+        LOGGER.info("[EtherRPC] Shutdown.");
     }
 }

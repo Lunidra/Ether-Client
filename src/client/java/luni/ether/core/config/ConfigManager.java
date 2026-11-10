@@ -20,6 +20,7 @@ public class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static JsonObject cachedGuiData;
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ConfigManager.class);
 
     private static Path getConfigPath() {
         return Path.of("ether", "config.json");
@@ -84,8 +85,7 @@ public class ConfigManager {
             //System.out.println("[Ether] Config saved");
 
         } catch (Exception e) {
-            System.err.println("[Ether] Failed to save config");
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to save config", e);
         }
     }
 
@@ -150,8 +150,7 @@ public class ConfigManager {
             //System.out.println("[Ether] Config loaded");
 
         } catch (Exception e) {
-            System.err.println("[Ether] Failed to load config");
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to load config", e);
         }
     }
 
@@ -226,7 +225,7 @@ public class ConfigManager {
             //System.out.println("[Ether] GUI state saved");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to save GUI state", e);
         }
     }
 
@@ -286,7 +285,7 @@ public class ConfigManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to save GUI state", e);
         }
 
 
@@ -333,7 +332,7 @@ public class ConfigManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to load HUD", e);
         }
     }
 
@@ -373,7 +372,7 @@ public class ConfigManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to save theme", e);
         }
     }
 
@@ -410,7 +409,7 @@ public class ConfigManager {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("[Ether] Failed to load theme", e);
         }
     }
 
